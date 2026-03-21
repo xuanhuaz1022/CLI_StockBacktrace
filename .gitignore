@@ -1,0 +1,35 @@
+# Build directory
+build/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled files
+*.o
+*.so
+*.dylib
+*.dll
+*.exe
+
+# CMake files
+CMakeCache.txt
+CMakeFiles/
+Makefile
+
+# Test files
+*.log
+
+# Data files (if not needed for version control)
+data/*
+!data/.gitkeep
+
+# Configuration files
+config.ini
+
+# OS generated files
+.DS_Store
+Thumbs.db
