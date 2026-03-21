@@ -18,3 +18,8 @@ add_executable(test_thread_pool
     src/thread_pool.cpp
     test_thread_pool.cpp
 )
+
+add_executable(test_indicator
+    src/indicator.cpp
+    test_indicator.cpp
+)

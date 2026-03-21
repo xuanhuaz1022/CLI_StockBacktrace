@@ -1,7 +1,10 @@
+#ifndef TYPES_H
+#define TYPES_H
+
 #include <string>
-#include <chrono>
-#include <unordered_map>
 #include <vector>
+#include <unordered_map>
+#include <chrono>
 #include <iostream>
 
 struct Bar
@@ -62,3 +65,5 @@ struct BacktestResult
   double sortino_ratio;
   std::vector<double> equity_curve;
 };
+
+#endif
