@@ -30,16 +30,26 @@ void DataHandler::load_data(const std::string &file_path, const std::string &sym
       std::chrono::system_clock::time_point timestamp;
       double open, high, low, close, volume;
 
-      // 解析时间戳
+      // 解析时间戳 - 支持A股数据格式
       std::getline(ss, temp, ',');
       std::tm tm = {};
       std::istringstream timestamp_ss(temp);
+      
+      // 尝试解析带时间的格式 "%Y-%m-%d %H:%M:%S"
       timestamp_ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-      if (timestamp_ss.fail())
-      {
-        std::cerr << "Error parsing timestamp: " << temp << std::endl;
-        continue;
+      
+      // 如果失败，尝试解析只有日期的格式 "%Y-%m-%d"（A股数据常用）
+      if (timestamp_ss.fail()) {
+          timestamp_ss.clear();
+          timestamp_ss.str(temp);
+          timestamp_ss >> std::get_time(&tm, "%Y-%m-%d");
+          
+          if (timestamp_ss.fail()) {
+              std::cerr << "Error parsing timestamp: " << temp << std::endl;
+              continue;
+          }
       }
+      
       auto time_t = std::mktime(&tm);
       timestamp = std::chrono::system_clock::from_time_t(time_t);
 

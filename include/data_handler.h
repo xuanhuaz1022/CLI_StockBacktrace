@@ -1,3 +1,6 @@
+#ifndef DATA_HANDLER_H
+#define DATA_HANDLER_H
+
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -25,3 +28,5 @@ public:
 private:
   std::unordered_map<std::string, std::vector<Bar>> data_;
 };
+
+#endif
