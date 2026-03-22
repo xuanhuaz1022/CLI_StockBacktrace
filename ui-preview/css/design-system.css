@@ -1,0 +1,327 @@
+/* Design System CSS Variables */
+
+:root {
+    /* Primary Colors */
+    --primary-color: #1890ff;
+    --primary-light: #e6f7ff;
+    --primary-dark: #096dd9;
+
+    /* Functional Colors */
+    --success-color: #52c41a;
+    --warning-color: #faad14;
+    --error-color: #f5222d;
+    --info-color: #1890ff;
+
+    /* Neutral Colors - Light Mode */
+    --text-primary: #262626;
+    --text-secondary: #595959;
+    --text-light: #8c8c8c;
+    --border-color: #e8e8e8;
+    --background-color: #f5f5f5;
+    --card-background: #ffffff;
+
+    /* Spacing */
+    --spacing-0: 0px;
+    --spacing-4: 4px;
+    --spacing-8: 8px;
+    --spacing-12: 12px;
+    --spacing-16: 16px;
+    --spacing-24: 24px;
+    --spacing-32: 32px;
+    --spacing-48: 48px;
+    --spacing-64: 64px;
+
+    /* Layout Spacing */
+    --container-padding: 16px;
+    --component-spacing: 12px;
+    --card-spacing: 16px;
+    --row-spacing: 8px;
+
+    /* Shadows */
+    --shadow-none: 0 0 0 0 rgba(0, 0, 0, 0);
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.09);
+    --shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.12);
+    --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.16);
+
+    /* Border Radius */
+    --radius-none: 0px;
+    --radius-small: 4px;
+    --radius-medium: 8px;
+    --radius-large: 12px;
+    --radius-circle: 50%;
+
+    /* Typography */
+    --font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+    /* Font Sizes */
+    --font-size-h1: 24px;
+    --font-size-h2: 20px;
+    --font-size-h3: 16px;
+    --font-size-body: 14px;
+    --font-size-small: 12px;
+
+    /* Line Heights */
+    --line-height-h1: 32px;
+    --line-height-h2: 28px;
+    --line-height-h3: 24px;
+    --line-height-body: 20px;
+    --line-height-small: 16px;
+
+    /* Font Weights */
+    --font-weight-bold: 600;
+    --font-weight-regular: 400;
+    --font-weight-light: 300;
+
+    /* Layout */
+    --header-height: 64px;
+    --sidebar-width: 200px;
+    --sidebar-width-collapsed: 80px;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --text-primary: #ffffff;
+    --text-secondary: #b0b0b0;
+    --text-light: #8c8c8c;
+    --border-color: #434343;
+    --background-color: #1f1f1f;
+    --card-background: #2c2c2c;
+}
+
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-body);
+    line-height: var(--line-height-body);
+    color: var(--text-primary);
+    background-color: var(--background-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--font-weight-bold);
+    margin-bottom: var(--spacing-8);
+}
+
+h1 {
+    font-size: var(--font-size-h1);
+    line-height: var(--line-height-h1);
+}
+
+h2 {
+    font-size: var(--font-size-h2);
+    line-height: var(--line-height-h2);
+}
+
+h3 {
+    font-size: var(--font-size-h3);
+    line-height: var(--line-height-h3);
+}
+
+p {
+    margin-bottom: var(--spacing-16);
+}
+
+small {
+    font-size: var(--font-size-small);
+    line-height: var(--line-height-small);
+    color: var(--text-light);
+}
+
+/* Utility Classes */
+.text-primary {
+    color: var(--text-primary);
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+}
+
+.text-light {
+    color: var(--text-light);
+}
+
+.text-success {
+    color: var(--success-color);
+}
+
+.text-warning {
+    color: var(--warning-color);
+}
+
+.text-error {
+    color: var(--error-color);
+}
+
+.text-info {
+    color: var(--info-color);
+}
+
+/* Spacing Utilities */
+.mt-0 { margin-top: var(--spacing-0); }
+.mt-4 { margin-top: var(--spacing-4); }
+.mt-8 { margin-top: var(--spacing-8); }
+.mt-12 { margin-top: var(--spacing-12); }
+.mt-16 { margin-top: var(--spacing-16); }
+.mt-24 { margin-top: var(--spacing-24); }
+.mt-32 { margin-top: var(--spacing-32); }
+
+.mb-0 { margin-bottom: var(--spacing-0); }
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mb-8 { margin-bottom: var(--spacing-8); }
+.mb-12 { margin-bottom: var(--spacing-12); }
+.mb-16 { margin-bottom: var(--spacing-16); }
+.mb-24 { margin-bottom: var(--spacing-24); }
+.mb-32 { margin-bottom: var(--spacing-32); }
+
+.ml-0 { margin-left: var(--spacing-0); }
+.ml-4 { margin-left: var(--spacing-4); }
+.ml-8 { margin-left: var(--spacing-8); }
+.ml-12 { margin-left: var(--spacing-12); }
+.ml-16 { margin-left: var(--spacing-16); }
+
+.mr-0 { margin-right: var(--spacing-0); }
+.mr-4 { margin-right: var(--spacing-4); }
+.mr-8 { margin-right: var(--spacing-8); }
+.mr-12 { margin-right: var(--spacing-12); }
+.mr-16 { margin-right: var(--spacing-16); }
+
+.p-0 { padding: var(--spacing-0); }
+.p-4 { padding: var(--spacing-4); }
+.p-8 { padding: var(--spacing-8); }
+.p-12 { padding: var(--spacing-12); }
+.p-16 { padding: var(--spacing-16); }
+.p-24 { padding: var(--spacing-24); }
+.p-32 { padding: var(--spacing-32); }
+
+.pt-0 { padding-top: var(--spacing-0); }
+.pt-4 { padding-top: var(--spacing-4); }
+.pt-8 { padding-top: var(--spacing-8); }
+.pt-12 { padding-top: var(--spacing-12); }
+.pt-16 { padding-top: var(--spacing-16); }
+
+.pb-0 { padding-bottom: var(--spacing-0); }
+.pb-4 { padding-bottom: var(--spacing-4); }
+.pb-8 { padding-bottom: var(--spacing-8); }
+.pb-12 { padding-bottom: var(--spacing-12); }
+.pb-16 { padding-bottom: var(--spacing-16); }
+
+.pl-0 { padding-left: var(--spacing-0); }
+.pl-4 { padding-left: var(--spacing-4); }
+.pl-8 { padding-left: var(--spacing-8); }
+.pl-12 { padding-left: var(--spacing-12); }
+.pl-16 { padding-left: var(--spacing-16); }
+
+.pr-0 { padding-right: var(--spacing-0); }
+.pr-4 { padding-right: var(--spacing-4); }
+.pr-8 { padding-right: var(--spacing-8); }
+.pr-12 { padding-right: var(--spacing-12); }
+.pr-16 { padding-right: var(--spacing-16); }
+
+/* Display Utilities */
+.d-none { display: none; }
+.d-block { display: block; }
+.d-inline { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-flex { display: flex; }
+.d-grid { display: grid; }
+
+/* Flex Utilities */
+.flex-row { flex-direction: row; }
+.flex-column { flex-direction: column; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-nowrap { flex-wrap: nowrap; }
+
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-around { justify-content: space-around; }
+
+.align-start { align-items: flex-start; }
+.align-center { align-items: center; }
+.align-end { align-items: flex-end; }
+.align-stretch { align-items: stretch; }
+
+/* Position Utilities */
+.position-relative { position: relative; }
+.position-absolute { position: absolute; }
+.position-fixed { position: fixed; }
+.position-sticky { position: sticky; }
+
+/* Width Utilities */
+.w-100 { width: 100%; }
+.w-75 { width: 75%; }
+.w-50 { width: 50%; }
+.w-25 { width: 25%; }
+
+/* Height Utilities */
+.h-100 { height: 100%; }
+.h-auto { height: auto; }
+
+/* Overflow Utilities */
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-scroll { overflow: scroll; }
+
+/* Text Utilities */
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.text-uppercase { text-transform: uppercase; }
+.text-lowercase { text-transform: lowercase; }
+.text-capitalize { text-transform: capitalize; }
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Border Utilities */
+.border { border: 1px solid var(--border-color); }
+.border-top { border-top: 1px solid var(--border-color); }
+.border-right { border-right: 1px solid var(--border-color); }
+.border-bottom { border-bottom: 1px solid var(--border-color); }
+.border-left { border-left: 1px solid var(--border-color); }
+
+.border-0 { border: none; }
+.border-radius-none { border-radius: var(--radius-none); }
+.border-radius-small { border-radius: var(--radius-small); }
+.border-radius-medium { border-radius: var(--radius-medium); }
+.border-radius-large { border-radius: var(--radius-large); }
+.border-radius-circle { border-radius: var(--radius-circle); }
+
+/* Shadow Utilities */
+.shadow-none { box-shadow: var(--shadow-none); }
+.shadow-light { box-shadow: var(--shadow-light); }
+.shadow-medium { box-shadow: var(--shadow-medium); }
+.shadow-strong { box-shadow: var(--shadow-strong); }
+
+/* Cursor Utilities */
+.cursor-pointer { cursor: pointer; }
+.cursor-default { cursor: default; }
+.cursor-not-allowed { cursor: not-allowed; }
+
+/* Transition Utilities */
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.transition-fast {
+    transition: all 0.15s ease;
+}
+
+.transition-slow {
+    transition: all 0.5s ease;
+}

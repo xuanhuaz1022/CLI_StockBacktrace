@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>股票回测系统 - UI预览</title>
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/pages.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="32" height="32" rx="4" fill="#1890ff"/>
+                        <path d="M8 20L12 16L16 20L20 12L24 16" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                    <span class="logo-text">股票回测系统</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <nav class="nav-links">
+                    <a href="#" class="nav-link active" data-page="dashboard">仪表盘</a>
+                    <a href="#" class="nav-link" data-page="data">数据管理</a>
+                    <a href="#" class="nav-link" data-page="strategy">策略管理</a>
+                    <a href="#" class="nav-link" data-page="backtest">回测管理</a>
+                    <a href="#" class="nav-link" data-page="results">结果分析</a>
+                </nav>
+            </div>
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 2V4M10 16V18M18 10H16M4 10H2M15.6569 4.34315L14.2426 5.75736M5.75736 14.2426L4.34315 15.6569M15.6569 15.6569L14.2426 14.2426M5.75736 5.75736L4.34315 4.34315" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        <circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <div class="user-avatar">
+                    <div class="avatar-circle">U</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="main-container">
+            <!-- Sidebar -->
+            <aside class="sidebar" id="sidebar">
+                <div class="sidebar-toggle" id="sidebarToggle">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 5H17M3 10H17M3 15H17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <nav class="sidebar-nav">
+                    <div class="nav-item active" data-page="dashboard">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 3H7V7H3V3Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M13 3H17V7H13V3Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 13H7V17H3V13Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M13 13H17V17H13V13Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>仪表盘</span>
+                    </div>
+                    <div class="nav-item" data-page="data">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 4H17V6H3V4Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 9H17V11H3V9Z" stroke="currentColor" stroke-width="2"/>
+                            <path d="M3 14H17V16H3V14Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>数据管理</span>
+                    </div>
+                    <div class="nav-item" data-page="strategy">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 2L12.5 7H18L13.5 10.5L15 16L10 12.5L5 16L6.5 10.5L2 7H7.5L10 2Z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>策略管理</span>
+                    </div>
+                    <div class="nav-item" data-page="backtest">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 10C2 5.58172 5.58172 2 10 2C14.4183 2 18 5.58172 18 10C18 14.4183 14.4183 18 10 18" stroke="currentColor" stroke-width="2"/>
+                            <path d="M10 6V10L13 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        <span>回测管理</span>
+                    </div>
+                    <div class="nav-item" data-page="results">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 12L6 16L18 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span>结果分析</span>
+                    </div>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="breadcrumb">
+                    <span class="breadcrumb-item">首页</span>
+                    <span class="breadcrumb-separator">/</span>
+                    <span class="breadcrumb-item active" id="currentPage">仪表盘</span>
+                </div>
+
+                <!-- Page Content -->
+                <div id="pageContent">
+                    <!-- Dashboard Page -->
+                    <div class="page" id="page-dashboard">
+                        <div class="page-header">
+                            <h1 class="page-title">仪表盘</h1>
+                            <p class="page-subtitle">系统概览和关键指标</p>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon success">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value">+25.6%</div>
+                                    <div class="stat-label">总收益率</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon info">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M12 6V12L16 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value">156</div>
+                                    <div class="stat-label">回测次数</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon warning">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2L2 22H22L12 2ZM12 6L19.53 20H4.47L12 6Z" stroke="currentColor" stroke-width="2"/>
+                                        <path d="M12 10V14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                        <path d="M12 16V18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+                                    </svg>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value">3</div>
+                                    <div class="stat-label">运行中</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon error">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM17 13H7V11H17V13Z" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                </div>
+                                <div class="stat-content">
+                                    <div class="stat-value">2</div>
+                                    <div class="stat-label">失败</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="content-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">权益曲线</h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-sm btn-secondary">导出</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-placeholder">
+                                        <svg width="100%" height="300" viewBox="0 0 600 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect width="600" height="300" fill="#f5f5f5" rx="8"/>
+                                            <path d="M0 250C50 240, 100 260, 150 230C200 200, 250 180, 300 150C350 120, 400 140, 450 100C500 60, 550 80, 600 50" stroke="#1890ff" stroke-width="3" fill="none"/>
+                                            <circle cx="300" cy="150" r="6" fill="#1890ff"/>
+                                            <text x="300" y="140" text-anchor="middle" fill="#262626" font-size="14">当前收益: +25.6%</text>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">最近回测任务</h3>
+                                    <div class="card-actions">
+                                        <button class="btn btn-sm btn-secondary">查看全部</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="task-list">
+                                        <div class="task-item">
+                                            <div class="task-info">
+                                                <div class="task-name">双均线策略回测</div>
+                                                <div class="task-time">2024-01-15 14:30</div>
+                                            </div>
+                                            <div class="task-status success">已完成</div>
+                                        </div>
+                                        <div class="task-item">
+                                            <div class="task-info">
+                                                <div class="task-name">MACD策略回测</div>
+                                                <div class="task-time">2024-01-15 13:45</div>
+                                            </div>
+                                            <div class="task-status running">运行中</div>
+                                        </div>
+                                        <div class="task-item">
+                                            <div class="task-info">
+                                                <div class="task-name">布林带策略回测</div>
+                                                <div class="task-time">2024-01-15 12:20</div>
+                                            </div>
+                                            <div class="task-status success">已完成</div>
+                                        </div>
+                                        <div class="task-item">
+                                            <div class="task-info">
+                                                <div class="task-name">RSI策略回测</div>
+                                                <div class="task-time">2024-01-15 11:10</div>
+                                            </div>
+                                            <div class="task-status error">失败</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Management Page -->
+                    <div class="page" id="page-data" style="display: none;">
+                        <div class="page-header">
+                            <h1 class="page-title">数据管理</h1>
+                            <p class="page-subtitle">上传和管理股票数据文件</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">上传数据</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="upload-area">
+                                    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M24 4V28M24 4L16 12M24 4L32 12" stroke="#1890ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M8 20V40C8 42.2091 9.79086 44 12 44H36C38.2091 44 40 42.2091 40 40V20" stroke="#1890ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    <p class="upload-text">点击或拖拽文件到此处上传</p>
+                                    <p class="upload-hint">支持 CSV 格式，最大 50MB</p>
+                                    <button class="btn btn-primary">选择文件</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">数据文件列表</h3>
+                                <div class="card-actions">
+                                    <input type="text" class="input input-sm" placeholder="搜索文件...">
+                                    <button class="btn btn-secondary btn-sm">筛选</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>文件名</th>
+                                            <th>股票代码</th>
+                                            <th>数据范围</th>
+                                            <th>记录数</th>
+                                            <th>上传时间</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>000001.csv</td>
+                                            <td>000001</td>
+                                            <td>2020-01-01 ~ 2024-01-15</td>
+                                            <td>1,234</td>
+                                            <td>2024-01-15 10:30</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary">预览</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>000002.csv</td>
+                                            <td>000002</td>
+                                            <td>2020-01-01 ~ 2024-01-15</td>
+                                            <td>1,234</td>
+                                            <td>2024-01-15 10:25</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary">预览</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>600000.csv</td>
+                                            <td>600000</td>
+                                            <td>2020-01-01 ~ 2024-01-15</td>
+                                            <td>1,234</td>
+                                            <td>2024-01-15 10:20</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary">预览</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Strategy Management Page -->
+                    <div class="page" id="page-strategy" style="display: none;">
+                        <div class="page-header">
+                            <h1 class="page-title">策略管理</h1>
+                            <p class="page-subtitle">创建和管理交易策略</p>
+                        </div>
+
+                        <div class="content-grid">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">策略列表</h3>
+                                    <button class="btn btn-primary btn-sm">新建策略</button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="strategy-list">
+                                        <div class="strategy-item active">
+                                            <div class="strategy-info">
+                                                <div class="strategy-name">双均线策略</div>
+                                                <div class="strategy-desc">基于5日和20日均线的交叉信号</div>
+                                            </div>
+                                            <div class="strategy-actions">
+                                                <button class="btn btn-sm btn-secondary">编辑</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </div>
+                                        </div>
+                                        <div class="strategy-item">
+                                            <div class="strategy-info">
+                                                <div class="strategy-name">MACD策略</div>
+                                                <div class="strategy-desc">基于MACD指标的买卖信号</div>
+                                            </div>
+                                            <div class="strategy-actions">
+                                                <button class="btn btn-sm btn-secondary">编辑</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </div>
+                                        </div>
+                                        <div class="strategy-item">
+                                            <div class="strategy-info">
+                                                <div class="strategy-name">布林带策略</div>
+                                                <div class="strategy-desc">基于布林带的突破策略</div>
+                                            </div>
+                                            <div class="strategy-actions">
+                                                <button class="btn btn-sm btn-secondary">编辑</button>
+                                                <button class="btn btn-sm btn-danger">删除</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">策略配置</h3>
+                                </div>
+                                <div class="card-body">
+                                    <form class="form">
+                                        <div class="form-group">
+                                            <label class="form-label">策略名称</label>
+                                            <input type="text" class="input" value="双均线策略">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">短期均线周期</label>
+                                            <input type="number" class="input" value="5">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">长期均线周期</label>
+                                            <input type="number" class="input" value="20">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">止损比例 (%)</label>
+                                            <input type="number" class="input" value="5">
+                                        </div>
+                                        <div class="form-actions">
+                                            <button type="button" class="btn btn-primary">保存配置</button>
+                                            <button type="button" class="btn btn-secondary">取消</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backtest Management Page -->
+                    <div class="page" id="page-backtest" style="display: none;">
+                        <div class="page-header">
+                            <h1 class="page-title">回测管理</h1>
+                            <p class="page-subtitle">创建和管理回测任务</p>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">新建回测</h3>
+                            </div>
+                            <div class="card-body">
+                                <form class="form">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">选择策略</label>
+                                            <select class="input">
+                                                <option>双均线策略</option>
+                                                <option>MACD策略</option>
+                                                <option>布林带策略</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">选择数据</label>
+                                            <select class="input">
+                                                <option>000001.csv</option>
+                                                <option>000002.csv</option>
+                                                <option>600000.csv</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">开始日期</label>
+                                            <input type="date" class="input" value="2023-01-01">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">结束日期</label>
+                                            <input type="date" class="input" value="2024-01-15">
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label class="form-label">初始资金</label>
+                                            <input type="number" class="input" value="100000">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">手续费率 (%)</label>
+                                            <input type="number" class="input" value="0.1">
+                                        </div>
+                                    </div>
+                                    <div class="form-actions">
+                                        <button type="button" class="btn btn-primary">开始回测</button>
+                                        <button type="button" class="btn btn-secondary">重置</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">回测任务列表</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>任务ID</th>
+                                            <th>策略</th>
+                                            <th>数据</th>
+                                            <th>时间范围</th>
+                                            <th>状态</th>
+                                            <th>进度</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#001</td>
+                                            <td>双均线策略</td>
+                                            <td>000001.csv</td>
+                                            <td>2023-01-01 ~ 2024-01-15</td>
+                                            <td><span class="badge success">已完成</span></td>
+                                            <td>100%</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary">查看结果</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#002</td>
+                                            <td>MACD策略</td>
+                                            <td>000002.csv</td>
+                                            <td>2023-01-01 ~ 2024-01-15</td>
+                                            <td><span class="badge warning">运行中</span></td>
+                                            <td>65%</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-danger">取消</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>#003</td>
+                                            <td>布林带策略</td>
+                                            <td>600000.csv</td>
+                                            <td>2023-01-01 ~ 2024-01-15</td>
+                                            <td><span class="badge error">失败</span></td>
+                                            <td>-</td>
+                                            <td>
+                                                <button class="btn btn-sm btn-secondary">查看日志</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Results Analysis Page -->
+                    <div class="page" id="page-results" style="display: none;">
+                        <div class="page-header">
+                            <h1 class="page-title">结果分析</h1>
+                            <p class="page-subtitle">回测结果详细分析</p>
+                        </div>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-content">
+                                    <div class="stat-value">+25.6%</div>
+                                    <div class="stat-label">总收益率</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-content">
+                                    <div class="stat-value">1.85</div>
+                                    <div class="stat-label">夏普比率</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-content">
+                                    <div class="stat-value">-8.2%</div>
+                                    <div class="stat-label">最大回撤</div>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-content">
+                                    <div class="stat-value">156</div>
+                                    <div class="stat-label">交易次数</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">权益曲线</h3>
+                                <div class="card-actions">
+                                    <button class="btn btn-sm btn-secondary">导出报告</button>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="chart-placeholder">
+                                    <svg width="100%" height="400" viewBox="0 0 800 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <rect width="800" height="400" fill="#f5f5f5" rx="8"/>
+                                        <path d="M0 350C80 340, 160 360, 240 320C320 280, 400 260, 480 220C560 180, 640 200, 720 150C760 125, 780 140, 800 120" stroke="#1890ff" stroke-width="3" fill="none"/>
+                                        <circle cx="480" cy="220" r="8" fill="#1890ff"/>
+                                        <text x="480" y="200" text-anchor="middle" fill="#262626" font-size="16">当前权益: ¥125,600</text>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h3 class="card-title">交易记录</h3>
+                            </div>
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>日期</th>
+                                            <th>类型</th>
+                                            <th>股票代码</th>
+                                            <th>价格</th>
+                                            <th>数量</th>
+                                            <th>金额</th>
+                                            <th>盈亏</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2024-01-15</td>
+                                            <td><span class="badge success">买入</span></td>
+                                            <td>000001</td>
+                                            <td>12.50</td>
+                                            <td>1000</td>
+                                            <td>¥12,500</td>
+                                            <td>-</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2024-01-14</td>
+                                            <td><span class="badge error">卖出</span></td>
+                                            <td>000002</td>
+                                            <td>15.80</td>
+                                            <td>800</td>
+                                            <td>¥12,640</td>
+                                            <td class="text-success">+¥1,240</td>
+                                        </tr>
+                                        <tr>
+                                            <td>2024-01-13</td>
+                                            <td><span class="badge success">买入</span></td>
+                                            <td>000002</td>
+                                            <td>14.20</td>
+                                            <td>800</td>
+                                            <td>¥11,360</td>
+                                            <td>-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

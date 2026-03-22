@@ -20,18 +20,18 @@ add_executable(stock_backtrack
 
 add_executable(test_thread_pool
     src/thread_pool.cpp
-    test_thread_pool.cpp
+    test/test_thread_pool.cpp
 )
 
 add_executable(test_indicator
     src/indicator.cpp
-    test_indicator.cpp
+    test/test_indicator.cpp
 )
 
 add_executable(test_strategy
     src/indicator.cpp
     src/strategy.cpp
-    test_strategy.cpp
+    test/test_strategy.cpp
 )
 
 add_executable(test_execution
@@ -39,13 +39,13 @@ add_executable(test_execution
     src/indicator.cpp
     src/strategy.cpp
     src/execution_handler.cpp
-    test_execution.cpp
+    test/test_execution.cpp
 )
 
 add_executable(test_execution_direct
     src/types.cpp
     src/execution_handler.cpp
-    test_execution_direct.cpp
+    test/test_execution_direct.cpp
 )
 
 add_executable(test_backtest
@@ -55,5 +55,5 @@ add_executable(test_backtest
     src/strategy.cpp
     src/execution_handler.cpp
     src/backtest_engine.cpp
-    test_backtest.cpp
+    test/test_backtest.cpp
 )

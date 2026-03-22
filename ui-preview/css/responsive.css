@@ -1,0 +1,631 @@
+/* Responsive CSS */
+
+/* Extra Small Devices (phones, less than 576px) */
+@media (max-width: 575.98px) {
+    /* Header */
+    .header {
+        padding: 0 var(--spacing-12);
+    }
+
+    .header-center {
+        display: none;
+    }
+
+    .header-right {
+        gap: var(--spacing-8);
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        bottom: 0;
+        z-index: 999;
+        width: 280px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar.collapsed {
+        width: 280px;
+    }
+
+    /* Main Content */
+    .main-content {
+        padding: var(--spacing-12);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-12);
+    }
+
+    /* Content Grid */
+    .content-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-12);
+    }
+
+    /* Cards */
+    .card {
+        margin-bottom: var(--spacing-12);
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-12);
+    }
+
+    .card-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* Tables */
+    .table {
+        font-size: var(--font-size-small);
+    }
+
+    .table th,
+    .table td {
+        padding: var(--spacing-8);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* Forms */
+    .form-row {
+        flex-direction: column;
+        gap: var(--spacing-12);
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .form-actions .btn {
+        width: 100%;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: var(--spacing-8) var(--spacing-12);
+        font-size: var(--font-size-small);
+    }
+
+    /* Modal */
+    .modal {
+        width: 95%;
+        max-height: 85vh;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: var(--spacing-12) var(--spacing-16);
+    }
+
+    /* Drawer */
+    .drawer {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    /* Notification */
+    .notification {
+        min-width: auto;
+        max-width: calc(100vw - 32px);
+    }
+
+    /* Breadcrumb */
+    .breadcrumb {
+        font-size: var(--font-size-small);
+    }
+
+    /* Page Header */
+    .page-title {
+        font-size: var(--font-size-h2);
+    }
+
+    .page-subtitle {
+        font-size: var(--font-size-small);
+    }
+
+    /* Chart Placeholder */
+    .chart-placeholder {
+        height: 200px;
+    }
+
+    /* Task List */
+    .task-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-8);
+    }
+
+    .task-status {
+        align-self: flex-start;
+    }
+
+    /* Strategy List */
+    .strategy-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--spacing-12);
+    }
+
+    .strategy-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    /* Upload Area */
+    .upload-area {
+        padding: var(--spacing-24);
+    }
+
+    /* Stats Card */
+    .stat-card {
+        padding: var(--spacing-12);
+    }
+
+    .stat-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .stat-value {
+        font-size: var(--font-size-h3);
+    }
+
+    /* Tabs */
+    .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+        white-space: nowrap;
+    }
+
+    /* Steps */
+    .steps {
+        flex-direction: column;
+        gap: var(--spacing-8);
+    }
+
+    .step {
+        flex-direction: row;
+    }
+
+    .step-indicator {
+        flex-shrink: 0;
+    }
+
+    /* Pagination */
+    .pagination {
+        flex-wrap: wrap;
+    }
+
+    /* Timeline */
+    .timeline {
+        padding-left: var(--spacing-24);
+    }
+
+    .timeline::before {
+        left: 6px;
+    }
+
+    .timeline-dot {
+        left: -18px;
+        width: 12px;
+        height: 12px;
+    }
+}
+
+/* Small Devices (landscape phones, 576px and up) */
+@media (min-width: 576px) and (max-width: 767.98px) {
+    /* Header */
+    .header-center {
+        display: none;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        left: -100%;
+        top: var(--header-height);
+        bottom: 0;
+        z-index: 999;
+        width: 280px;
+        transition: all 0.3s ease;
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .sidebar.collapsed {
+        width: 280px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Content Grid */
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Forms */
+    .form-row {
+        flex-direction: column;
+    }
+
+    /* Tables */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Medium Devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 991.98px) {
+    /* Sidebar */
+    .sidebar {
+        width: var(--sidebar-width-collapsed);
+    }
+
+    .sidebar.collapsed {
+        width: var(--sidebar-width);
+    }
+
+    .sidebar .sidebar-nav span {
+        display: none;
+    }
+
+    .sidebar.collapsed .sidebar-nav span {
+        display: inline;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Content Grid */
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Forms */
+    .form-row {
+        flex-direction: column;
+    }
+
+    /* Tables */
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+/* Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    /* Sidebar */
+    .sidebar {
+        width: var(--sidebar-width);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    /* Content Grid */
+    .content-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    /* Sidebar */
+    .sidebar {
+        width: var(--sidebar-width);
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
+    /* Content Grid */
+    .content-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* Print Styles */
+@media print {
+    /* Hide non-essential elements */
+    .header,
+    .sidebar,
+    .breadcrumb,
+    .card-actions,
+    .form-actions,
+    .notification-container {
+        display: none !important;
+    }
+
+    /* Adjust layout for print */
+    .main-container {
+        display: block;
+    }
+
+    .main-content {
+        padding: 0;
+        background-color: white;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #000;
+        page-break-inside: avoid;
+    }
+
+    /* Ensure text is readable */
+    body {
+        color: #000;
+        background-color: white;
+    }
+
+    /* Table adjustments */
+    .table {
+        border: 1px solid #000;
+    }
+
+    .table th,
+    .table td {
+        border: 1px solid #000;
+    }
+
+    /* Remove shadows and transitions */
+    * {
+        box-shadow: none !important;
+        transition: none !important;
+    }
+
+    /* Page breaks */
+    .page {
+        page-break-before: always;
+    }
+
+    .page:first-child {
+        page-break-before: avoid;
+    }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Improve rendering for high DPI displays */
+    body {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Use SVG icons for better quality */
+    svg {
+        shape-rendering: geometricPrecision;
+    }
+}
+
+/* Dark Mode Specific Adjustments */
+@media (prefers-color-scheme: dark) {
+    /* Auto-enable dark mode if user prefers it */
+    /* This can be controlled by JavaScript */
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    /* Reduce animations for users who prefer reduced motion */
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Landscape Orientation */
+@media (orientation: landscape) and (max-height: 500px) {
+    /* Adjust for small landscape screens */
+    .header {
+        height: 48px;
+    }
+
+    .sidebar {
+        top: 48px;
+    }
+
+    .main-content {
+        padding: var(--spacing-8);
+    }
+
+    .card-header,
+    .card-body,
+    .card-footer {
+        padding: var(--spacing-12);
+    }
+}
+
+/* Touch Devices */
+@media (hover: none) and (pointer: coarse) {
+    /* Adjust for touch devices */
+    .btn,
+    .nav-item,
+    .card {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Increase tap targets */
+    .btn {
+        padding: var(--spacing-12) var(--spacing-20);
+    }
+
+    .nav-item {
+        padding: var(--spacing-16);
+    }
+
+    /* Remove hover effects */
+    .btn:hover,
+    .nav-item:hover,
+    .card:hover {
+        transform: none;
+    }
+}
+
+/* Focus Visible for Accessibility */
+@media (focus-visible: true) {
+    /* Show focus styles only when keyboard is used */
+    .btn:focus-visible,
+    .input:focus-visible,
+    .nav-item:focus-visible {
+        outline: 2px solid var(--primary-color);
+        outline-offset: 2px;
+    }
+}
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Custom scrollbar for WebKit browsers */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: var(--background-color);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: var(--radius-circle);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--text-light);
+}
+
+/* Mobile Menu Toggle */
+.mobile-menu-toggle {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .mobile-menu-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        padding: 0;
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-small);
+        color: var(--text-secondary);
+        cursor: pointer;
+    }
+
+    .mobile-menu-toggle:hover {
+        border-color: var(--primary-color);
+        color: var(--primary-color);
+    }
+}
+
+/* Bottom Navigation for Mobile */
+.bottom-nav {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .bottom-nav {
+        display: flex;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 56px;
+        background-color: var(--card-background);
+        border-top: 1px solid var(--border-color);
+        z-index: 1000;
+    }
+
+    .bottom-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: var(--spacing-4);
+        padding: var(--spacing-8);
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .bottom-nav-item:hover {
+        color: var(--primary-color);
+    }
+
+    .bottom-nav-item.active {
+        color: var(--primary-color);
+    }
+
+    .bottom-nav-item svg {
+        width: 24px;
+        height: 24px;
+    }
+
+    .bottom-nav-item span {
+        font-size: var(--font-size-small);
+    }
+
+    .main-content {
+        padding-bottom: 72px;
+    }
+}
