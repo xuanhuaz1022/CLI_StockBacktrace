@@ -37,25 +37,27 @@
 ### 技术栈
 
 #### 后端技术栈
-| 组件 | 技术 | 版本 | 说明 |
-|------|------|------|------|
-| 后端语言 | C++ | C++20 | 高性能，适合计算密集型任务 |
-| Web框架 | Drogon | 最新稳定版 | 高性能异步框架，支持现代C++ |
-| 数据库 | SQLite | 3.x | 轻量级，无需独立服务器 |
-| 构建工具 | CMake | 3.16+ | 跨平台构建工具 |
-| 依赖管理 | vcpkg | 最新版 | 第三方库依赖管理 |
+
+| 组件     | 技术   | 版本       | 说明                        |
+| -------- | ------ | ---------- | --------------------------- |
+| 后端语言 | C++    | C++20      | 高性能，适合计算密集型任务  |
+| Web框架  | Drogon | 最新稳定版 | 高性能异步框架，支持现代C++ |
+| 数据库   | SQLite | 3.x        | 轻量级，无需独立服务器      |
+| 构建工具 | CMake  | 3.16+      | 跨平台构建工具              |
+| 依赖管理 | vcpkg  | 最新版     | 第三方库依赖管理            |
 
 #### 前端技术栈
-| 组件 | 技术 | 版本 | 说明 |
-|------|------|------|------|
-| 前端框架 | React | 18.x | 组件化开发，生态成熟 |
-| 状态管理 | Zustand | 最新版 | 轻量级状态管理 |
-| UI组件库 | Ant Design | 5.x | 企业级组件库 |
-| 图表库 | ECharts | 5.x | 功能强大的金融图表库 |
-| 构建工具 | Vite | 5.x | 快速开发体验 |
-| 路由 | React Router | 6.x | 官方推荐路由方案 |
-| HTTP客户端 | Axios | 1.x | 完善的HTTP客户端 |
-| 类型检查 | TypeScript | 5.x | 类型安全 |
+
+| 组件       | 技术         | 版本   | 说明                 |
+| ---------- | ------------ | ------ | -------------------- |
+| 前端框架   | React        | 18.x   | 组件化开发，生态成熟 |
+| 状态管理   | Zustand      | 最新版 | 轻量级状态管理       |
+| UI组件库   | Ant Design   | 5.x    | 企业级组件库         |
+| 图表库     | ECharts      | 5.x    | 功能强大的金融图表库 |
+| 构建工具   | Vite         | 5.x    | 快速开发体验         |
+| 路由       | React Router | 6.x    | 官方推荐路由方案     |
+| HTTP客户端 | Axios        | 1.x    | 完善的HTTP客户端     |
+| 类型检查   | TypeScript   | 5.x    | 类型安全             |
 
 ### 核心模块
 
@@ -131,6 +133,7 @@
 ## 系统特性
 
 ### 后端特性
+
 - **高性能**：C++20 + 多线程并行处理，回测速度快
 - **可扩展**：模块化设计，支持自定义策略和指标
 - **完整的性能评估**：收益率、最大回撤、夏普比率、索提诺比率等
@@ -139,6 +142,7 @@
 - **线程池优化**：高效的多线程任务调度
 
 ### 前端特性
+
 - **现代化界面**：React + Ant Design，用户体验优秀
 - **实时更新**：WebSocket支持，实时显示回测进度
 - **响应式设计**：支持多设备访问
@@ -198,6 +202,7 @@ stock_backtrack/
 ### 后端构建与运行
 
 1. **安装依赖**
+
    ```bash
    # 安装CMake和C++20编译器
    # macOS
@@ -208,6 +213,7 @@ stock_backtrack/
    ```
 
 2. **构建项目**
+
    ```bash
    mkdir build
    cd build
@@ -223,12 +229,14 @@ stock_backtrack/
 ### 前端开发
 
 1. **安装依赖**
+
    ```bash
    cd frontend
    npm install
    ```
 
 2. **启动开发服务器**
+
    ```bash
    npm run dev
    ```
@@ -242,5 +250,108 @@ stock_backtrack/
 
 ### 数据管理接口
 
-| 方法 | 路径 | 功能 |
-|------
+| 方法   | 路径             | 功能               |
+| ------ | ---------------- | ------------------ |
+| POST   | /api/data/upload | 上传CSV数据文件    |
+| GET    | /api/data/list   | 列出可用的数据文件 |
+| GET    | /api/data/{id}   | 获取数据详情       |
+| DELETE | /api/data/{id}   | 删除数据           |
+
+### 策略管理接口
+
+| 方法   | 路径                 | 功能         |
+| ------ | -------------------- | ------------ |
+| POST   | /api/strategies      | 创建策略     |
+| GET    | /api/strategies      | 列出策略     |
+| GET    | /api/strategies/{id} | 获取策略详情 |
+| PUT    | /api/strategies/{id} | 更新策略     |
+| DELETE | /api/strategies/{id} | 删除策略     |
+
+### 回测管理接口
+
+| 方法 | 路径                       | 功能         |
+| ---- | -------------------------- | ------------ |
+| POST | /api/backtests             | 运行回测     |
+| GET  | /api/backtests             | 列出回测结果 |
+| GET  | /api/backtests/{id}        | 获取回测详情 |
+| GET  | /api/backtests/{id}/equity | 获取权益曲线 |
+| GET  | /api/backtests/{id}/status | 获取回测状态 |
+
+详细的API文档请参考 [backend_architecture.md](backend_architecture.md)
+
+## 自定义策略
+
+要创建自定义策略，只需继承`Strategy`类并实现以下方法：
+
+```cpp
+class MyStrategy : public Strategy {
+public:
+    void on_bar(const std::string& symbol, const Bar& bar) override {
+        // 实现交易逻辑
+    }
+
+    std::string get_name() const override {
+        return "MyStrategy";
+    }
+};
+```
+
+## 性能指标说明
+
+- **收益率**：回测期间的总收益率
+- **最大回撤**：回测期间的最大亏损百分比
+- **夏普比率**：风险调整收益率，衡量单位风险的超额收益
+- **索提诺比率**：类似夏普比率，但只考虑下行风险
+
+## 示例数据
+
+系统支持CSV格式的历史行情数据，示例格式：
+
+```csv
+date,open,high,low,close,volume
+2023-01-01,100.0,105.0,98.0,102.0,1000000
+2023-01-02,102.0,108.0,100.0,106.0,1200000
+...
+```
+
+## 开发文档
+
+- [后端架构设计](backend_architecture.md) - 详细的系统后端架构设计
+- [前端架构设计](frontend_architecture.md) - 详细的系统前端架构设计
+- [项目进度文档](PROGRESS.md) - 项目开发进度和计划
+- [UI设计文档](UIdesign.md) - UI/UX设计规范
+
+## 注意事项
+
+- 系统默认使用多线程进行并行回测，可以根据硬件配置调整
+- 数据文件需要按照指定格式准备，否则可能导致加载失败
+- 策略实现需要注意线程安全性，避免并发访问冲突
+- 回测结果仅供参考，实际交易可能受到市场流动性、滑点等因素影响
+- 前端开发需要确保后端API服务正常运行
+
+## 许可证
+
+本项目采用MIT许可证，详见LICENSE文件。
+
+## 贡献指南
+
+欢迎贡献代码！请遵循以下步骤：
+
+1. Fork本仓库
+2. 创建功能分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启Pull Request
+
+## 联系方式
+
+如有问题或建议，欢迎通过以下方式联系：
+
+- Email: 13564701211@163.com
+- Gitee: https://gitee.com/zhang-xuanhua123/open-stock-backtrack
+
+---
+
+**项目状态**：开发中
+**最后更新**：2026-03-22
+**维护者**：开发团队
