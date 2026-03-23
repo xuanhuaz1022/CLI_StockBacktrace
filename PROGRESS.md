@@ -8,59 +8,71 @@
 
 ### 已实现的模块
 
-#### 1. 类型定义模块 (`include/types.h`, `src/types.cpp`)
+#### 1. 类型定义模块 (`core/include/types.h`, `core/src/types.cpp`)
 - 定义了基础数据类型：`Bar`（K线数据）、`Order`（订单）、`Position`（持仓）、`Portfolio`（投资组合）、`BacktestResult`（回测结果）
 - 实现了投资组合价值计算方法 `get_total_value()`
 - 支持时间戳和价格数据的存储和处理
 
-#### 2. 线程池模块 (`include/thread_pool.h`, `src/thread_pool.cpp`)
+#### 2. 线程池模块 (`core/include/thread_pool.h`, `core/src/thread_pool.cpp`)
 - 实现了通用线程池，支持多线程任务调度
 - 支持任务提交和执行，提高回测性能
 - 包含完整的线程池测试文件 `test_thread_pool.cpp`
 
-#### 3. 数据处理模块 (`include/data_handler.h`, `src/data_handler.cpp`)
+#### 3. 数据处理模块 (`core/include/data_handler.h`, `core/src/data_handler.cpp`)
 - 实现了从CSV文件加载历史行情数据的功能
 - 支持按时间范围查询数据
 - 提供数据符号管理和时间范围查询接口
 - 支持多股票数据管理
 
-#### 4. 指标计算模块 (`include/indicator.h`, `src/indicator.cpp`)
+#### 4. 指标计算模块 (`core/include/indicator.h`, `core/src/indicator.cpp`)
 - 实现了简单移动平均线 (SMA) 计算
 - 实现了指数移动平均线 (EMA) 计算
 - 提供了基于K线数据的指标计算接口
 
-#### 5. 策略模块 (`include/strategy.h`, `src/strategy.cpp`)
+#### 5. 策略模块 (`core/include/strategy.h`, `core/src/strategy.cpp`)
 - 定义了策略基类 `Strategy`，提供统一接口
 - 实现了移动平均线交叉策略 (`MovingAverageCrossStrategy`)
 - 支持自定义交易信号生成（买入、卖出、持有）
 - 包含策略测试文件 `test_strategy.cpp`
 
-#### 6. 执行模块 (`include/execution_handler.h`, `src/execution_handler.cpp`)
+#### 6. 执行模块 (`core/include/execution_handler.h`, `core/src/execution_handler.cpp`)
 - 管理投资组合和现金余额
 - 执行交易信号并更新持仓
 - 提供投资组合状态查询接口
 - 包含执行模块测试文件 `test_execution.cpp` 和 `test_execution_direct.cpp`
 
-#### 7. 回测引擎 (`include/backtest_engine.h`, `src/backtest_engine.cpp`)
+#### 7. 回测引擎 (`core/include/backtest_engine.h`, `core/src/backtest_engine.cpp`)
 - 协调数据、策略和执行模块进行回测
 - 实现了完整的回测流程：数据加载 → 信号生成 → 交易执行 → 绩效评估
 - 计算绩效指标：总收益率、最大回撤、夏普比率、索提诺比率
 - 生成权益曲线，支持回测结果分析
 - 包含回测引擎测试文件 `test_backtest.cpp`
 
-#### 8. 数据库模块 (`src/database.cpp`)
-- 实现了数据库连接和基础操作
-- 支持SQLite数据库的创建和管理
+#### 8. 数据库模块 (`backend/models/Database.h`, `backend/models/Database.cpp`)
+- 实现了SQLite数据库接口和完整的CRUD操作
+- 支持数据文件、策略、回测结果的存储和管理
+- 使用nlohmann/json库进行JSON数据处理
+- 创建了完整的数据库表结构（data_files, strategies, backtests, equity_curves）
 
-#### 9. 主程序框架 (`src/main.cpp`)
+#### 9. 后端架构模块
+- `backend/api/APIServer.h`：RESTful API服务器接口定义
+- `backend/cli/CLI.h`：CLI命令行接口定义
+- `backend/services/BacktestService.h`：回测业务服务接口定义
+- `backend/utils/Utils.h`：工具函数接口定义
+
+#### 10. 主程序框架 (`core/src/main.cpp`)
 - 搭建了系统的完整框架
 - 集成了各个模块的调用
 - 提供了用户交互界面
 
-#### 10. 项目配置文件
-- `CMakeLists.txt`：项目构建配置，支持多文件编译
+#### 11. 项目配置文件
+- `CMakeLists.txt`：项目构建配置，支持分层架构和外部依赖
 - `.gitignore`：Git忽略文件配置
 - `README.md`：项目文档
+- `backend_architecture.md`：后端架构设计文档
+- `frontend_architecture.md`：前端架构设计文档
+- `UIdesign.md`：UI/UX设计规范文档
+- `PROGRESS.md`：项目进度文档
 
 ### 已实现的功能特性
 
@@ -181,8 +193,10 @@
 ### 后端技术栈
 - **语言**：C++20
 - **Web框架**：Drogon（规划中）
-- **数据库**：SQLite
-- **构建工具**：CMake
+- **数据库**：SQLite3
+- **JSON处理**：nlohmann/json
+- **构建工具**：CMake 3.16+
+- **依赖管理**：vcpkg
 - **版本控制**：Git
 
 ### 前端技术栈
@@ -200,24 +214,46 @@
 
 ```
 stock_backtrack/
-├── include/                  # 后端头文件
-│   ├── backtest_engine.h    # 回测引擎
-│   ├── data_handler.h        # 数据处理
-│   ├── execution_handler.h   # 执行处理
-│   ├── indicator.h           # 指标计算
-│   ├── strategy.h            # 策略模块
-│   ├── thread_pool.h         # 线程池
-│   └── types.h               # 类型定义
-├── src/                      # 后端源代码
-│   ├── backtest_engine.cpp
-│   ├── data_handler.cpp
-│   ├── database.cpp
-│   ├── execution_handler.cpp
-│   ├── indicator.cpp
-│   ├── main.cpp
-│   ├── strategy.cpp
-│   ├── thread_pool.cpp
-│   └── types.cpp
+├── core/                     # 核心回测引擎
+│   ├── include/              # 核心头文件
+│   │   ├── backtest_engine.h    # 回测引擎
+│   │   ├── data_handler.h        # 数据处理
+│   │   ├── execution_handler.h   # 执行处理
+│   │   ├── indicator.h           # 指标计算
+│   │   ├── strategy.h            # 策略模块
+│   │   ├── thread_pool.h         # 线程池
+│   │   └── types.h               # 类型定义
+│   └── src/                  # 核心源代码
+│       ├── backtest_engine.cpp
+│       ├── data_handler.cpp
+│       ├── execution_handler.cpp
+│       ├── indicator.cpp
+│       ├── main.cpp
+│       ├── strategy.cpp
+│       ├── thread_pool.cpp
+│       └── types.cpp
+├── backend/                  # 后端服务层
+│   ├── api/                  # API服务接口
+│   │   └── APIServer.h
+│   ├── cli/                  # CLI命令行接口
+│   │   └── CLI.h
+│   ├── models/               # 数据模型
+│   │   ├── Database.h
+│   │   └── Database.cpp
+│   ├── services/             # 业务服务
+│   │   └── BacktestService.h
+│   └── utils/                # 工具函数
+│       └── Utils.h
+├── frontend/                 # 前端项目
+│   ├── public/              # 公共资源
+│   ├── src/                 # 源代码
+│   │   ├── assets/          # 静态资源
+│   │   ├── stores/          # 状态管理
+│   │   ├── types/           # 类型定义
+│   │   ├── App.tsx          # 主应用组件
+│   │   └── main.tsx         # 入口文件
+│   ├── package.json
+│   └── vite.config.ts
 ├── test/                     # 测试文件
 │   ├── test_backtest.cpp
 │   ├── test_execution.cpp
@@ -225,16 +261,6 @@ stock_backtrack/
 │   ├── test_indicator.cpp
 │   ├── test_strategy.cpp
 │   └── test_thread_pool.cpp
-├── frontend/                 # 前端项目
-│   ├── public/              # 公共资源
-│   ├── src/                 # 源代码
-│   │   ├── components/      # 通用组件
-│   │   ├── pages/           # 页面组件
-│   │   ├── services/        # API服务
-│   │   ├── stores/          # 状态管理
-│   │   └── utils/           # 工具函数
-│   ├── package.json
-│   └── vite.config.ts
 ├── ui-preview/               # UI预览
 │   ├── css/                  # 样式文件
 │   ├── js/                   # JavaScript文件
@@ -254,21 +280,23 @@ stock_backtrack/
 ### 短期计划（1-2周）
 
 #### 后端开发
-1. **集成Drogon框架**
-   - 安装和配置Drogon依赖
-   - 创建基础的HTTP服务器
-   - 实现基本的路由和控制器
+1. **安装和配置外部依赖**
+   - 通过vcpkg安装Drogon、nlohmann/json、CLI11
+   - 配置CMake构建系统
+   - 确保所有依赖正确集成
 
 2. **实现API服务层**
-   - 实现数据管理API接口
-   - 实现策略管理API接口
-   - 实现回测管理API接口
-   - 实现系统管理API接口
+   - 基于Drogon框架实现REST API接口
+   - 实现数据管理API接口（上传、查询、删除）
+   - 实现策略管理API接口（创建、更新、删除）
+   - 实现回测管理API接口（运行、查询结果）
+   - 实现系统管理API接口（状态、指标）
 
-3. **数据库集成**
-   - 完善数据库模块
-   - 实现数据持久化
-   - 实现数据查询和管理
+3. **完善数据库功能**
+   - 实现数据文件上传和存储
+   - 实现策略参数的JSON序列化和反序列化
+   - 实现回测结果的持久化存储
+   - 优化数据库查询性能
 
 #### 前端开发
 1. **搭建前端项目结构**
@@ -350,14 +378,18 @@ stock_backtrack/
 
 ### 已解决的问题
 
-1. **核心架构设计**：完成了完整的模块化设计，包括数据处理、策略、执行、回测引擎等模块
-2. **多线程支持**：实现了线程池，支持并行回测提高性能
-3. **策略框架**：设计了灵活的策略基类，支持自定义策略扩展
-4. **绩效评估**：实现了完整的绩效指标计算，包括收益率、最大回撤、夏普比率等
-5. **数据处理**：实现了CSV数据加载和时间范围查询功能
-6. **测试覆盖**：完成了所有模块的单元测试，确保系统稳定性
-7. **架构设计**：完成了详细的前后端架构设计文档
-8. **UI设计**：完成了完整的UI预览和设计系统
+1. **项目架构重构**：成功将项目重构为core/backend/frontend三层架构，提高了代码组织清晰度
+2. **数据库模块实现**：实现了完整的SQLite数据库接口，支持数据文件、策略、回测结果的存储和管理
+3. **JSON库集成**：成功集成nlohmann/json库，替代了自定义的SimpleJSON类，提高了JSON处理能力
+4. **CMake构建系统**：更新了CMakeLists.txt，支持分层架构和外部依赖管理
+5. **多线程支持**：实现了线程池，支持并行回测提高性能
+6. **策略框架**：设计了灵活的策略基类，支持自定义策略扩展
+7. **绩效评估**：实现了完整的绩效指标计算，包括收益率、最大回撤、夏普比率等
+8. **数据处理**：实现了CSV数据加载和时间范围查询功能
+9. **测试覆盖**：完成了所有模块的单元测试，确保系统稳定性
+10. **架构设计**：完成了详细的前后端架构设计文档
+11. **UI设计**：完成了完整的UI预览和设计系统
+12. **后端接口定义**：创建了API服务、CLI命令行、业务服务等接口定义
 
 ### 当前面临的挑战
 
