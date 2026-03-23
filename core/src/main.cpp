@@ -1,3 +1,4 @@
+#include "../backend/cli/CLI.h"
 #include "data_handler.h"
 #include "strategy.h"
 #include "execution_handler.h"
@@ -56,7 +57,8 @@ void save_equity_curve(const std::vector<double> &equity, const std::string &fil
     }
 }
 
-int main()
+// 运行默认回测（兼容旧版功能）
+void run_default_backtest()
 {
     std::cout << "欢迎使用股票量化回测系统！" << std::endl;
     std::cout << "===============================" << std::endl;
@@ -79,7 +81,7 @@ int main()
         std::cout << "3. 将文件重命名为: " << csv_file << std::endl;
         std::cout << "4. 确保文件编码为UTF-8或GBK" << std::endl;
         std::cout << "==========================================" << std::endl;
-        return 1;
+        return;
     }
 
     // 加载数据
@@ -117,6 +119,26 @@ int main()
     save_equity_curve(engine.get_equity_curve(), "equity_curve.csv");
 
     std::cout << "\n回测系统运行完毕！" << std::endl;
+}
 
-    return 0;
+int main(int argc, char **argv)
+{
+    // 如果没有命令行参数，运行默认回测
+    if (argc == 1)
+    {
+        run_default_backtest();
+        return 0;
+    }
+
+    // 否则运行CLI接口
+    try
+    {
+        stock_backtrack::CLI cli;
+        return cli.run(argc, argv);
+    }
+    catch (const std::exception &e)
+    {
+        std::cerr << "错误: " << e.what() << std::endl;
+        return 1;
+    }
 }

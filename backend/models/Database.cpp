@@ -74,6 +74,132 @@ bool Database::execute_query_with_callback(const std::string &query,
     return true;
 }
 
+bool Database::execute_prepared_statement(const std::string &query,
+                                          const std::vector<std::pair<int, std::string>> &parameters)
+{
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db_, query.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "准备SQL语句失败: " << sqlite3_errmsg(db_) << std::endl;
+        return false;
+    }
+
+    // 绑定参数
+    for (const auto &param : parameters)
+    {
+        int index = param.first;
+        const std::string &value = param.second;
+
+        // 尝试转换为数值类型
+        try
+        {
+            double num = std::stod(value);
+            rc = sqlite3_bind_double(stmt, index, num);
+        }
+        catch (...)
+        {
+            rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+        }
+
+        if (rc != SQLITE_OK)
+        {
+            std::cerr << "绑定参数失败: " << sqlite3_errmsg(db_) << std::endl;
+            sqlite3_finalize(stmt);
+            return false;
+        }
+    }
+
+    rc = sqlite3_step(stmt);
+    if (rc != SQLITE_DONE)
+    {
+        std::cerr << "执行SQL语句失败: " << sqlite3_errmsg(db_) << std::endl;
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
+bool Database::execute_prepared_statement_with_callback(const std::string &query,
+                                                        const std::vector<std::pair<int, std::string>> &parameters,
+                                                        int (*callback)(void *, int, char **, char **),
+                                                        void *data)
+{
+    sqlite3_stmt *stmt;
+    int rc = sqlite3_prepare_v2(db_, query.c_str(), -1, &stmt, nullptr);
+    if (rc != SQLITE_OK)
+    {
+        std::cerr << "准备SQL语句失败: " << sqlite3_errmsg(db_) << std::endl;
+        return false;
+    }
+
+    // 绑定参数
+    for (const auto &param : parameters)
+    {
+        int index = param.first;
+        const std::string &value = param.second;
+
+        // 尝试转换为数值类型
+        try
+        {
+            double num = std::stod(value);
+            rc = sqlite3_bind_double(stmt, index, num);
+        }
+        catch (...)
+        {
+            rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+        }
+
+        if (rc != SQLITE_OK)
+        {
+            std::cerr << "绑定参数失败: " << sqlite3_errmsg(db_) << std::endl;
+            sqlite3_finalize(stmt);
+            return false;
+        }
+    }
+
+    // 执行查询并处理结果
+    while ((rc = sqlite3_step(stmt)) == SQLITE_ROW)
+    {
+        int column_count = sqlite3_column_count(stmt);
+        char **argv = new char *[column_count];
+        char **azColName = new char *[column_count];
+
+        for (int i = 0; i < column_count; ++i)
+        {
+            const char *column_name = sqlite3_column_name(stmt, i);
+            azColName[i] = const_cast<char *>(column_name);
+
+            const char *value = reinterpret_cast<const char *>(sqlite3_column_text(stmt, i));
+            if (value)
+            {
+                argv[i] = const_cast<char *>(value);
+            }
+            else
+            {
+                argv[i] = nullptr;
+            }
+        }
+
+        callback(data, column_count, argv, azColName);
+
+        delete[] argv;
+        delete[] azColName;
+    }
+
+    if (rc != SQLITE_DONE)
+    {
+        std::cerr << "执行SQL查询失败: " << sqlite3_errmsg(db_) << std::endl;
+        sqlite3_finalize(stmt);
+        return false;
+    }
+
+    sqlite3_finalize(stmt);
+    return true;
+}
+
 bool Database::create_tables()
 {
     // 创建数据文件表
@@ -143,11 +269,18 @@ bool Database::create_data_file(const std::string &id, const std::string &symbol
                                 const std::string &file_path, const std::string &start_date,
                                 const std::string &end_date, int record_count)
 {
-    std::stringstream query;
-    query << "INSERT INTO data_files (id, symbol, file_path, start_date, end_date, record_count) "
-          << "VALUES ('" << id << "', '" << symbol << "', '" << file_path << "', '"
-          << start_date << "', '" << end_date << "', " << record_count << ")";
-    return execute_query(query.str());
+    std::string query = "INSERT INTO data_files (id, symbol, file_path, start_date, end_date, record_count) "
+                        "VALUES (?, ?, ?, ?, ?, ?)";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id},
+        {2, symbol},
+        {3, file_path},
+        {4, start_date},
+        {5, end_date},
+        {6, std::to_string(record_count)}};
+
+    return execute_prepared_statement(query, parameters);
 }
 
 bool Database::get_data_files(std::vector<json> &data_files)
@@ -155,31 +288,33 @@ bool Database::get_data_files(std::vector<json> &data_files)
     std::string query = "SELECT * FROM data_files ORDER BY upload_time DESC";
 
     auto callback = [](void *data, int argc, char **argv, char **azColName) -> int
+    {
+        auto &files = *static_cast<std::vector<json> *>(data);
+        json file;
+        for (int i = 0; i < argc; ++i)
         {
-            auto &files = *static_cast<std::vector<json> *>(data);
-            json file;
-            for (int i = 0; i < argc; ++i)
+            if (argv[i])
             {
-                if (argv[i])
-                {
-                    file[azColName[i]] = argv[i];
-                }
-                else
-                {
-                    file[azColName[i]] = nullptr;
-                }
+                file[azColName[i]] = argv[i];
             }
-            files.push_back(file);
-            return 0;
-        };
+            else
+            {
+                file[azColName[i]] = nullptr;
+            }
+        }
+        files.push_back(file);
+        return 0;
+    };
 
     return execute_query_with_callback(query, callback, &data_files);
 }
 
 bool Database::get_data_file(const std::string &id, json &data_file)
 {
-    std::stringstream query;
-    query << "SELECT * FROM data_files WHERE id = '" << id << "'";
+    std::string query = "SELECT * FROM data_files WHERE id = ?";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id}};
 
     auto callback = [](void *data, int argc, char **argv, char **azColName) -> int
     {
@@ -198,33 +333,33 @@ bool Database::get_data_file(const std::string &id, json &data_file)
         return 0;
     };
 
-    return execute_query_with_callback(query.str(), callback, &data_file);
+    return execute_prepared_statement_with_callback(query, parameters, callback, &data_file);
 }
 
 bool Database::delete_data_file(const std::string &id)
 {
-    std::stringstream query;
-    query << "DELETE FROM data_files WHERE id = '" << id << "'";
-    return execute_query(query.str());
+    std::string query = "DELETE FROM data_files WHERE id = ?";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id}};
+
+    return execute_prepared_statement(query, parameters);
 }
 
 // 策略相关操作
 bool Database::create_strategy(const std::string &id, const std::string &name,
                                const std::string &type, const std::string &parameters)
 {
-    std::string params_str = parameters;
-    // 转义单引号
-    size_t pos = 0;
-    while ((pos = params_str.find("'", pos)) != std::string::npos)
-    {
-        params_str.replace(pos, 1, "''");
-        pos += 2;
-    }
+    std::string query = "INSERT INTO strategies (id, name, type, parameters) "
+                        "VALUES (?, ?, ?, ?)";
 
-    std::stringstream query;
-    query << "INSERT INTO strategies (id, name, type, parameters) "
-          << "VALUES ('" << id << "', '" << name << "', '" << type << "', '" << params_str << "')";
-    return execute_query(query.str());
+    std::vector<std::pair<int, std::string>> parameters_list = {
+        {1, id},
+        {2, name},
+        {3, type},
+        {4, parameters}};
+
+    return execute_prepared_statement(query, parameters_list);
 }
 
 bool Database::get_strategies(std::vector<json> &strategies)
@@ -255,8 +390,10 @@ bool Database::get_strategies(std::vector<json> &strategies)
 
 bool Database::get_strategy(const std::string &id, json &strategy)
 {
-    std::stringstream query;
-    query << "SELECT * FROM strategies WHERE id = '" << id << "'";
+    std::string query = "SELECT * FROM strategies WHERE id = ?";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id}};
 
     auto callback = [](void *data, int argc, char **argv, char **azColName) -> int
     {
@@ -275,43 +412,46 @@ bool Database::get_strategy(const std::string &id, json &strategy)
         return 0;
     };
 
-    return execute_query_with_callback(query.str(), callback, &strategy);
+    return execute_prepared_statement_with_callback(query, parameters, callback, &strategy);
 }
 
 bool Database::update_strategy(const std::string &id, const std::string &name,
                                const std::string &parameters)
 {
-    std::string params_str = parameters;
-    // 转义单引号
-    size_t pos = 0;
-    while ((pos = params_str.find("'", pos)) != std::string::npos)
-    {
-        params_str.replace(pos, 1, "''");
-        pos += 2;
-    }
+    std::string query = "UPDATE strategies SET name = ?, parameters = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
 
-    std::stringstream query;
-    query << "UPDATE strategies SET name = '" << name << "', parameters = '" << params_str
-          << "', updated_at = CURRENT_TIMESTAMP WHERE id = '" << id << "'";
-    return execute_query(query.str());
+    std::vector<std::pair<int, std::string>> parameters_list = {
+        {1, name},
+        {2, parameters},
+        {3, id}};
+
+    return execute_prepared_statement(query, parameters_list);
 }
 
 bool Database::delete_strategy(const std::string &id)
 {
-    std::stringstream query;
-    query << "DELETE FROM strategies WHERE id = '" << id << "'";
-    return execute_query(query.str());
+    std::string query = "DELETE FROM strategies WHERE id = ?";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id}};
+
+    return execute_prepared_statement(query, parameters);
 }
 
 // 回测相关操作
 bool Database::create_backtest(const std::string &id, const std::string &data_id,
                                const std::string &strategy_id, double initial_equity)
 {
-    std::stringstream query;
-    query << "INSERT INTO backtests (id, data_id, strategy_id, initial_equity, status) "
-          << "VALUES ('" << id << "', '" << data_id << "', '" << strategy_id << "', "
-          << initial_equity << ", 'running')";
-    return execute_query(query.str());
+    std::string query = "INSERT INTO backtests (id, data_id, strategy_id, initial_equity, status) "
+                        "VALUES (?, ?, ?, ?, 'running')";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id},
+        {2, data_id},
+        {3, strategy_id},
+        {4, std::to_string(initial_equity)}};
+
+    return execute_prepared_statement(query, parameters);
 }
 
 bool Database::update_backtest_status(const std::string &id, const std::string &status,
@@ -319,33 +459,42 @@ bool Database::update_backtest_status(const std::string &id, const std::string &
                                       double return_rate, double max_drawdown,
                                       double sharpe_ratio)
 {
-    std::stringstream query;
-    query << "UPDATE backtests SET status = '" << status << "', progress = " << progress;
+    std::string query = "UPDATE backtests SET status = ?, progress = ?";
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, status},
+        {2, std::to_string(progress)}};
+
+    int param_index = 3;
 
     if (final_equity > 0)
     {
-        query << ", final_equity = " << final_equity;
+        query += ", final_equity = ?";
+        parameters.emplace_back(param_index++, std::to_string(final_equity));
     }
     if (return_rate > 0)
     {
-        query << ", return_rate = " << return_rate;
+        query += ", return_rate = ?";
+        parameters.emplace_back(param_index++, std::to_string(return_rate));
     }
     if (max_drawdown > 0)
     {
-        query << ", max_drawdown = " << max_drawdown;
+        query += ", max_drawdown = ?";
+        parameters.emplace_back(param_index++, std::to_string(max_drawdown));
     }
     if (sharpe_ratio > 0)
     {
-        query << ", sharpe_ratio = " << sharpe_ratio;
+        query += ", sharpe_ratio = ?";
+        parameters.emplace_back(param_index++, std::to_string(sharpe_ratio));
     }
     if (status == "completed" || status == "failed")
     {
-        query << ", end_time = CURRENT_TIMESTAMP";
+        query += ", end_time = CURRENT_TIMESTAMP";
     }
 
-    query << " WHERE id = '" << id << "'";
+    query += " WHERE id = ?";
+    parameters.emplace_back(param_index, id);
 
-    return execute_query(query.str());
+    return execute_prepared_statement(query, parameters);
 }
 
 bool Database::get_backtests(std::vector<json> &backtests)
@@ -385,8 +534,10 @@ bool Database::get_backtests(std::vector<json> &backtests)
 
 bool Database::get_backtest(const std::string &id, json &backtest)
 {
-    std::stringstream query;
-    query << "SELECT * FROM backtests WHERE id = '" << id << "'";
+    std::string query = "SELECT * FROM backtests WHERE id = ?";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, id}};
 
     auto callback = [](void *data, int argc, char **argv, char **azColName) -> int
     {
@@ -414,24 +565,30 @@ bool Database::get_backtest(const std::string &id, json &backtest)
         return 0;
     };
 
-    return execute_query_with_callback(query.str(), callback, &backtest);
+    return execute_prepared_statement_with_callback(query, parameters, callback, &backtest);
 }
 
 // 权益曲线相关操作
 bool Database::add_equity_point(const std::string &backtest_id, const std::string &timestamp,
                                 double equity)
 {
-    std::stringstream query;
-    query << "INSERT INTO equity_curves (backtest_id, timestamp, equity) "
-          << "VALUES ('" << backtest_id << "', '" << timestamp << "', " << equity << ")";
-    return execute_query(query.str());
+    std::string query = "INSERT INTO equity_curves (backtest_id, timestamp, equity) "
+                        "VALUES (?, ?, ?)";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, backtest_id},
+        {2, timestamp},
+        {3, std::to_string(equity)}};
+
+    return execute_prepared_statement(query, parameters);
 }
 
 bool Database::get_equity_curve(const std::string &backtest_id, std::vector<json> &equity_curve)
 {
-    std::stringstream query;
-    query << "SELECT timestamp, equity FROM equity_curves WHERE backtest_id = '"
-          << backtest_id << "' ORDER BY timestamp";
+    std::string query = "SELECT timestamp, equity FROM equity_curves WHERE backtest_id = ? ORDER BY timestamp";
+
+    std::vector<std::pair<int, std::string>> parameters = {
+        {1, backtest_id}};
 
     auto callback = [](void *data, int argc, char **argv, char **azColName) -> int
     {
@@ -459,5 +616,5 @@ bool Database::get_equity_curve(const std::string &backtest_id, std::vector<json
         return 0;
     };
 
-    return execute_query_with_callback(query.str(), callback, &equity_curve);
+    return execute_prepared_statement_with_callback(query, parameters, callback, &equity_curve);
 }

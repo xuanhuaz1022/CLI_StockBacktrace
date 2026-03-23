@@ -57,6 +57,12 @@ private:
     bool execute_query_with_callback(const std::string &query,
                                      int (*callback)(void *, int, char **, char **),
                                      void *data);
+    bool execute_prepared_statement(const std::string &query,
+                                    const std::vector<std::pair<int, std::string>> &parameters);
+    bool execute_prepared_statement_with_callback(const std::string &query,
+                                                  const std::vector<std::pair<int, std::string>> &parameters,
+                                                  int (*callback)(void *, int, char **, char **),
+                                                  void *data);
     bool create_tables();
 };
 

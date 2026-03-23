@@ -11,6 +11,12 @@ find_package(SQLite3 REQUIRED)
 # 查找nlohmann/json依赖
 find_package(nlohmann_json REQUIRED)
 
+# 查找Drogon依赖
+find_package(Drogon REQUIRED)
+
+# 查找CLI11依赖
+find_package(CLI11 REQUIRED)
+
 include_directories(core/include)
 include_directories(backend)
 
@@ -24,11 +30,14 @@ add_executable(stock_backtrack
     core/src/main.cpp
     core/src/thread_pool.cpp
     backend/models/Database.cpp
+    backend/cli/CLI.cpp
 )
 
 target_link_libraries(stock_backtrack
     PRIVATE SQLite::SQLite3
     PRIVATE nlohmann_json::nlohmann_json
+    PRIVATE Drogon::Drogon
+    PRIVATE CLI11::CLI11
 )
 
 add_executable(test_thread_pool
@@ -73,20 +82,26 @@ add_executable(test_backtest
 
 # 链接测试程序的依赖库
 target_link_libraries(test_thread_pool
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 target_link_libraries(test_indicator
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 target_link_libraries(test_strategy
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 target_link_libraries(test_execution
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 target_link_libraries(test_execution_direct
+    PRIVATE nlohmann_json::nlohmann_json
 )
 
 target_link_libraries(test_backtest
     PRIVATE SQLite::SQLite3
+    PRIVATE nlohmann_json::nlohmann_json
 )

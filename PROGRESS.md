@@ -56,7 +56,7 @@
 
 #### 9. 后端架构模块
 - `backend/api/APIServer.h`：RESTful API服务器接口定义
-- `backend/cli/CLI.h`：CLI命令行接口定义
+- `backend/cli/CLI.h`：CLI命令行接口定义和实现，支持数据管理、策略管理、回测执行等命令
 - `backend/services/BacktestService.h`：回测业务服务接口定义
 - `backend/utils/Utils.h`：工具函数接口定义
 
