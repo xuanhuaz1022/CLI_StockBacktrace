@@ -21,7 +21,8 @@ public:
     // 数据文件相关操作
     bool create_data_file(const std::string &id, const std::string &symbol,
                           const std::string &file_path, const std::string &start_date,
-                          const std::string &end_date, int record_count);
+                          const std::string &end_date, int record_count,
+                          const std::string &format = "default");
     bool get_data_files(std::vector<json> &data_files);
     bool get_data_file(const std::string &id, json &data_file);
     bool delete_data_file(const std::string &id);

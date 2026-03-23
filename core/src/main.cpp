@@ -63,34 +63,41 @@ void run_default_backtest()
     std::cout << "欢迎使用股票量化回测系统！" << std::endl;
     std::cout << "===============================" << std::endl;
 
-    // 创建数据处理器
-    DataHandler data_handler;
-
-    // 加载数据文件 - 使用真实A股数据
-    std::string csv_file = "a_stock_data.csv"; // 请将真实数据保存为此文件名
-    std::string symbol = "A_STOCK";
+    // 使用BaoStock格式的数据文件
+    std::string csv_file = "data/sh_000001.csv"; // 使用上证指数数据
+    std::string symbol = "上证指数";
+    std::string data_format = "baostock";
 
     std::ifstream check_file(csv_file);
     if (!check_file.good())
     {
         std::cout << "==========================================" << std::endl;
         std::cout << "警告：数据文件 " << csv_file << " 不存在！" << std::endl;
-        std::cout << "请按以下步骤获取真实A股数据：" << std::endl;
-        std::cout << "1. 从新浪财经、东方财富等网站下载股票历史数据" << std::endl;
-        std::cout << "2. 保存为CSV格式，包含以下字段：日期,开盘价,最高价,最低价,收盘价,成交量" << std::endl;
-        std::cout << "3. 将文件重命名为: " << csv_file << std::endl;
-        std::cout << "4. 确保文件编码为UTF-8或GBK" << std::endl;
+        std::cout << "请确保已下载BaoStock数据到data文件夹" << std::endl;
+        std::cout << "使用命令: python3 download_data.py" << std::endl;
         std::cout << "==========================================" << std::endl;
         return;
     }
 
+    // 根据数据格式创建不同的DataHandler
+    std::unique_ptr<DataHandler> data_handler;
+    if (data_format == "baostock")
+    {
+        data_handler = std::make_unique<BaoStockDataHandler>();
+    }
+    else
+    {
+        data_handler = std::make_unique<DataHandler>();
+    }
+
     // 加载数据
     std::cout << "\n正在加载数据文件: " << csv_file << std::endl;
-    data_handler.load_data(csv_file, symbol);
+    std::cout << "数据格式: " << data_format << std::endl;
+    data_handler->load_data(csv_file, symbol);
     std::cout << "数据加载完成！" << std::endl;
 
     // 获取数据时间范围
-    auto time_range = data_handler.get_time_range(symbol);
+    auto time_range = data_handler->get_time_range(symbol);
     auto start_time = time_range.first;
     auto end_time = time_range.second;
 
@@ -101,7 +108,7 @@ void run_default_backtest()
     ExecutionHandler executor(100000.0);
 
     // 创建回测引擎
-    BacktestEngine engine(&data_handler, &strategy, &executor);
+    BacktestEngine engine(data_handler.get(), &strategy, &executor);
 
     // 运行回测
     std::cout << "\n正在运行回测..." << std::endl;

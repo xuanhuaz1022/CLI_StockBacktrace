@@ -34,22 +34,24 @@ void DataHandler::load_data(const std::string &file_path, const std::string &sym
       std::getline(ss, temp, ',');
       std::tm tm = {};
       std::istringstream timestamp_ss(temp);
-      
+
       // 尝试解析带时间的格式 "%Y-%m-%d %H:%M:%S"
       timestamp_ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
-      
+
       // 如果失败，尝试解析只有日期的格式 "%Y-%m-%d"（A股数据常用）
-      if (timestamp_ss.fail()) {
-          timestamp_ss.clear();
-          timestamp_ss.str(temp);
-          timestamp_ss >> std::get_time(&tm, "%Y-%m-%d");
-          
-          if (timestamp_ss.fail()) {
-              std::cerr << "Error parsing timestamp: " << temp << std::endl;
-              continue;
-          }
+      if (timestamp_ss.fail())
+      {
+        timestamp_ss.clear();
+        timestamp_ss.str(temp);
+        timestamp_ss >> std::get_time(&tm, "%Y-%m-%d");
+
+        if (timestamp_ss.fail())
+        {
+          std::cerr << "Error parsing timestamp: " << temp << std::endl;
+          continue;
+        }
       }
-      
+
       auto time_t = std::mktime(&tm);
       timestamp = std::chrono::system_clock::from_time_t(time_t);
 
@@ -131,4 +133,140 @@ bool DataHandler::has_data(const std::string &symbol)
 {
   // 实现检查指定股票符号是否有数据的逻辑
   return data_.find(symbol) != data_.end();
+}
+
+void BaoStockDataHandler::load_data(const std::string &file_path, const std::string &symbol)
+{
+  // 实现BaoStock格式数据加载逻辑
+  // 1. 创建对象并打开文件
+  std::ifstream file(file_path);
+  if (!file.is_open())
+  {
+    std::cerr << "Error: Failed to open file " << file_path << std::endl;
+    return;
+  }
+
+  // 2. 读取文件内容
+  std::string line;
+  bool is_header = true; // 跳过表头行
+  data_[symbol].reserve(1000000);
+  int success_count = 0;
+  int error_count = 0;
+
+  while (std::getline(file, line))
+  {
+    if (is_header)
+    {
+      is_header = false;
+      continue; // 跳过表头行
+    }
+    try
+    {
+      // 解析行数据 - BaoStock格式
+      std::stringstream ss(line);
+      std::string temp;
+      std::chrono::system_clock::time_point timestamp;
+      double open, high, low, close, volume;
+      std::string stock_code;
+
+      // 解析时间戳 - BaoStock格式: "%Y-%m-%d"
+      std::getline(ss, temp, ',');
+      std::tm tm = {};
+      std::istringstream timestamp_ss(temp);
+      timestamp_ss >> std::get_time(&tm, "%Y-%m-%d");
+
+      if (timestamp_ss.fail())
+      {
+        std::cerr << "Error parsing timestamp: " << temp << std::endl;
+        error_count++;
+        continue;
+      }
+
+      auto time_t = std::mktime(&tm);
+      timestamp = std::chrono::system_clock::from_time_t(time_t);
+
+      // 解析股票代码（BaoStock格式第二个字段）
+      std::getline(ss, stock_code, ',');
+
+      // 解析其他字段（BaoStock格式：open, high, low, close, preclose, volume...）
+      std::getline(ss, temp, ',');
+      try
+      {
+        open = std::stod(temp);
+      }
+      catch (const std::exception &e)
+      {
+        std::cerr << "Error parsing open: '" << temp << "' - " << e.what() << std::endl;
+        error_count++;
+        continue;
+      }
+
+      std::getline(ss, temp, ',');
+      try
+      {
+        high = std::stod(temp);
+      }
+      catch (const std::exception &e)
+      {
+        std::cerr << "Error parsing high: '" << temp << "' - " << e.what() << std::endl;
+        error_count++;
+        continue;
+      }
+
+      std::getline(ss, temp, ',');
+      try
+      {
+        low = std::stod(temp);
+      }
+      catch (const std::exception &e)
+      {
+        std::cerr << "Error parsing low: '" << temp << "' - " << e.what() << std::endl;
+        error_count++;
+        continue;
+      }
+
+      std::getline(ss, temp, ',');
+      try
+      {
+        close = std::stod(temp);
+      }
+      catch (const std::exception &e)
+      {
+        std::cerr << "Error parsing close: '" << temp << "' - " << e.what() << std::endl;
+        error_count++;
+        continue;
+      }
+
+      // 跳过preclose字段
+      std::getline(ss, temp, ',');
+
+      // 解析volume字段
+      std::getline(ss, temp, ',');
+      try
+      {
+        volume = std::stod(temp);
+      }
+      catch (const std::exception &e)
+      {
+        std::cerr << "Error parsing volume: '" << temp << "' - " << e.what() << std::endl;
+        error_count++;
+        continue;
+      }
+
+      // 存储数据
+      data_[symbol].push_back({timestamp, open, high, low, close, volume});
+      success_count++;
+    }
+    catch (const std::exception &e)
+    {
+      std::cerr << "Error: " << e.what() << std::endl;
+      error_count++;
+      continue;
+    }
+  }
+
+  // 4. 关闭文件
+  file.close();
+
+  std::cout << "BaoStockDataHandler: Loaded " << success_count << " records, " << error_count << " errors" << std::endl;
 }

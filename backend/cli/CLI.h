@@ -30,7 +30,7 @@ namespace stock_backtrack
         void setup_system_commands();
 
         // 数据管理命令处理
-        void handle_data_upload(const std::string &file, const std::string &symbol);
+        void handle_data_upload(const std::string &file, const std::string &symbol, const std::string &format);
         void handle_data_list();
         void handle_data_show(const std::string &id);
         void handle_data_delete(const std::string &id);
@@ -59,6 +59,7 @@ namespace stock_backtrack
         void print_json(const json &data);
         void print_error(const std::string &message);
         bool validate_file_path(const std::string &path);
+        void handle_backtest_error(const std::string &backtest_id, const std::string &error_message);
     };
 
 } // namespace stock_backtrack

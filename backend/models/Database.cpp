@@ -15,6 +15,7 @@ Database::~Database()
 
 bool Database::connect(const std::string &db_path)
 {
+    std::cout << "正在连接数据库: " << db_path << std::endl;
     int rc = sqlite3_open(db_path.c_str(), &db_);
     if (rc != SQLITE_OK)
     {
@@ -24,8 +25,11 @@ bool Database::connect(const std::string &db_path)
         return false;
     }
 
+    std::cout << "数据库连接成功" << std::endl;
+
     if (!create_tables())
     {
+        std::cerr << "创建表失败" << std::endl;
         disconnect();
         return false;
     }
@@ -91,15 +95,40 @@ bool Database::execute_prepared_statement(const std::string &query,
         int index = param.first;
         const std::string &value = param.second;
 
-        // 尝试转换为数值类型
-        try
+        // 使用更可靠的类型判断方法
+        if (value.empty())
         {
-            double num = std::stod(value);
-            rc = sqlite3_bind_double(stmt, index, num);
+            rc = sqlite3_bind_null(stmt, index);
         }
-        catch (...)
+        else
         {
-            rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            try
+            {
+                // 尝试转换为整数
+                size_t pos;
+                long long int_val = std::stoll(value, &pos);
+                if (pos == value.size())
+                {
+                    // 完全匹配整数格式
+                    rc = sqlite3_bind_int64(stmt, index, int_val);
+                }
+                else
+                {
+                    // 尝试转换为浮点数
+                    double double_val = std::stod(value);
+                    rc = sqlite3_bind_double(stmt, index, double_val);
+                }
+            }
+            catch (const std::invalid_argument &)
+            {
+                // 不是数字，绑定为文本
+                rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            }
+            catch (const std::out_of_range &)
+            {
+                // 数字超出范围，绑定为文本
+                rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            }
         }
 
         if (rc != SQLITE_OK)
@@ -141,15 +170,40 @@ bool Database::execute_prepared_statement_with_callback(const std::string &query
         int index = param.first;
         const std::string &value = param.second;
 
-        // 尝试转换为数值类型
-        try
+        // 使用更可靠的类型判断方法
+        if (value.empty())
         {
-            double num = std::stod(value);
-            rc = sqlite3_bind_double(stmt, index, num);
+            rc = sqlite3_bind_null(stmt, index);
         }
-        catch (...)
+        else
         {
-            rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            try
+            {
+                // 尝试转换为整数
+                size_t pos;
+                long long int_val = std::stoll(value, &pos);
+                if (pos == value.size())
+                {
+                    // 完全匹配整数格式
+                    rc = sqlite3_bind_int64(stmt, index, int_val);
+                }
+                else
+                {
+                    // 尝试转换为浮点数
+                    double double_val = std::stod(value);
+                    rc = sqlite3_bind_double(stmt, index, double_val);
+                }
+            }
+            catch (const std::invalid_argument &)
+            {
+                // 不是数字，绑定为文本
+                rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            }
+            catch (const std::out_of_range &)
+            {
+                // 数字超出范围，绑定为文本
+                rc = sqlite3_bind_text(stmt, index, value.c_str(), -1, SQLITE_TRANSIENT);
+            }
         }
 
         if (rc != SQLITE_OK)
@@ -211,6 +265,7 @@ bool Database::create_tables()
             start_date DATETIME NOT NULL,
             end_date DATETIME NOT NULL,
             record_count INTEGER NOT NULL,
+            format TEXT NOT NULL DEFAULT 'default',
             upload_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
         );
     )";
@@ -267,10 +322,11 @@ bool Database::create_tables()
 // 数据文件相关操作
 bool Database::create_data_file(const std::string &id, const std::string &symbol,
                                 const std::string &file_path, const std::string &start_date,
-                                const std::string &end_date, int record_count)
+                                const std::string &end_date, int record_count,
+                                const std::string &format)
 {
-    std::string query = "INSERT INTO data_files (id, symbol, file_path, start_date, end_date, record_count) "
-                        "VALUES (?, ?, ?, ?, ?, ?)";
+    std::string query = "INSERT INTO data_files (id, symbol, file_path, start_date, end_date, record_count, format) "
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     std::vector<std::pair<int, std::string>> parameters = {
         {1, id},
@@ -278,7 +334,8 @@ bool Database::create_data_file(const std::string &id, const std::string &symbol
         {3, file_path},
         {4, start_date},
         {5, end_date},
-        {6, std::to_string(record_count)}};
+        {6, std::to_string(record_count)},
+        {7, format}};
 
     return execute_prepared_statement(query, parameters);
 }

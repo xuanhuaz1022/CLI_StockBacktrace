@@ -10,6 +10,7 @@
 #include <vector>
 #include <chrono>
 #include "types.h"
+
 class DataHandler
 {
 public:
@@ -25,8 +26,16 @@ public:
   get_time_range(const std::string &symbol);
   virtual bool has_data(const std::string &symbol);
 
-private:
+protected:
   std::unordered_map<std::string, std::vector<Bar>> data_;
+};
+
+class BaoStockDataHandler : public DataHandler
+{
+public:
+  BaoStockDataHandler() = default;
+  ~BaoStockDataHandler() override = default;
+  void load_data(const std::string &file_path, const std::string &symbol) override;
 };
 
 #endif

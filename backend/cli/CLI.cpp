@@ -74,11 +74,16 @@ namespace stock_backtrack
         auto data = app.add_subcommand("data", "数据管理操作");
 
         auto upload_cmd = data->add_subcommand("upload", "上传CSV数据文件");
-        std::string upload_file, upload_symbol;
-        upload_cmd->add_option("<file>", upload_file)->required();
-        upload_cmd->add_option("--symbol", upload_symbol)->required();
-        upload_cmd->callback([this, &upload_file, &upload_symbol]()
-                             { handle_data_upload(upload_file, upload_symbol); });
+        std::string file, symbol, format = "default";
+        auto file_opt = upload_cmd->add_option("<file>", file)->required();
+        auto symbol_opt = upload_cmd->add_option("--symbol", symbol)->required();
+        auto format_opt = upload_cmd->add_option("--format", format)->default_val("default")->description("数据格式：default（默认格式）或 baostock");
+        upload_cmd->callback([this, file_opt, symbol_opt, format_opt]()
+                             {
+            std::string file_val = file_opt->as<std::string>();
+            std::string symbol_val = symbol_opt->as<std::string>();
+            std::string format_val = format_opt->as<std::string>();
+            handle_data_upload(file_val, symbol_val, format_val); });
 
         data->add_subcommand("list", "列出可用的数据文件")
             ->callback([this]()
@@ -86,15 +91,15 @@ namespace stock_backtrack
 
         auto show_cmd = data->add_subcommand("show", "获取数据详情");
         std::string show_id;
-        show_cmd->add_option("<id>", show_id)->required();
-        show_cmd->callback([this, &show_id]()
-                           { handle_data_show(show_id); });
+        auto show_id_opt = show_cmd->add_option("<id>", show_id)->required();
+        show_cmd->callback([this, show_id_opt]()
+                           { handle_data_show(show_id_opt->as<std::string>()); });
 
         auto delete_cmd = data->add_subcommand("delete", "删除数据");
         std::string delete_id;
-        delete_cmd->add_option("<id>", delete_id)->required();
-        delete_cmd->callback([this, &delete_id]()
-                             { handle_data_delete(delete_id); });
+        auto delete_id_opt = delete_cmd->add_option("<id>", delete_id)->required();
+        delete_cmd->callback([this, delete_id_opt]()
+                             { handle_data_delete(delete_id_opt->as<std::string>()); });
     }
 
     void CLI::setup_strategy_commands()
@@ -103,10 +108,13 @@ namespace stock_backtrack
 
         auto create_cmd = strategy->add_subcommand("create", "创建策略");
         std::string create_name, create_params;
-        create_cmd->add_option("<name>", create_name)->required();
-        create_cmd->add_option("--params", create_params)->required();
-        create_cmd->callback([this, &create_name, &create_params]()
-                             { handle_strategy_create(create_name, create_params); });
+        auto name_opt = create_cmd->add_option("<name>", create_name)->required();
+        auto params_opt = create_cmd->add_option("--params", create_params)->required();
+        create_cmd->callback([this, name_opt, params_opt]()
+                             {
+            std::string name_val = name_opt->as<std::string>();
+            std::string params_val = params_opt->as<std::string>();
+            handle_strategy_create(name_val, params_val); });
 
         strategy->add_subcommand("list", "列出策略")
             ->callback([this]()
@@ -114,23 +122,27 @@ namespace stock_backtrack
 
         auto show_strategy_cmd = strategy->add_subcommand("show", "获取策略详情");
         std::string show_strategy_id;
-        show_strategy_cmd->add_option("<id>", show_strategy_id)->required();
-        show_strategy_cmd->callback([this, &show_strategy_id]()
-                                    { handle_strategy_show(show_strategy_id); });
+        auto show_strategy_id_opt = show_strategy_cmd->add_option("<id>", show_strategy_id)->required();
+        show_strategy_cmd->callback([this, show_strategy_id_opt]()
+                                    { handle_strategy_show(show_strategy_id_opt->as<std::string>()); });
 
         auto update_cmd = strategy->add_subcommand("update", "更新策略");
         std::string update_id, update_name, update_params;
-        update_cmd->add_option("<id>", update_id)->required();
-        update_cmd->add_option("--name", update_name);
-        update_cmd->add_option("--params", update_params);
-        update_cmd->callback([this, &update_id, &update_name, &update_params]()
-                             { handle_strategy_update(update_id, update_name, update_params); });
+        auto update_id_opt = update_cmd->add_option("<id>", update_id)->required();
+        auto update_name_opt = update_cmd->add_option("--name", update_name);
+        auto update_params_opt = update_cmd->add_option("--params", update_params);
+        update_cmd->callback([this, update_id_opt, update_name_opt, update_params_opt]()
+                             {
+            std::string id_val = update_id_opt->as<std::string>();
+            std::string name_val = update_name_opt->as<std::string>();
+            std::string params_val = update_params_opt->as<std::string>();
+            handle_strategy_update(id_val, name_val, params_val); });
 
         auto delete_strategy_cmd = strategy->add_subcommand("delete", "删除策略");
         std::string delete_strategy_id;
-        delete_strategy_cmd->add_option("<id>", delete_strategy_id)->required();
-        delete_strategy_cmd->callback([this, &delete_strategy_id]()
-                                      { handle_strategy_delete(delete_strategy_id); });
+        auto delete_strategy_id_opt = delete_strategy_cmd->add_option("<id>", delete_strategy_id)->required();
+        delete_strategy_cmd->callback([this, delete_strategy_id_opt]()
+                                      { handle_strategy_delete(delete_strategy_id_opt->as<std::string>()); });
     }
 
     void CLI::setup_backtest_commands()
@@ -138,13 +150,17 @@ namespace stock_backtrack
         auto backtest = app.add_subcommand("backtest", "回测执行操作");
 
         auto run_cmd = backtest->add_subcommand("run", "运行回测");
-        std::string run_data_id, run_strategy_id;
-        double run_equity = DEFAULT_INITIAL_EQUITY;
-        run_cmd->add_option("--data", run_data_id)->required();
-        run_cmd->add_option("--strategy", run_strategy_id)->required();
-        run_cmd->add_option("--equity", run_equity)->default_val(DEFAULT_INITIAL_EQUITY);
-        run_cmd->callback([this, &run_data_id, &run_strategy_id, &run_equity]()
-                          { handle_backtest_run(run_data_id, run_strategy_id, run_equity); });
+        std::string data_id, strategy_id;
+        double equity = DEFAULT_INITIAL_EQUITY;
+        auto data_opt = run_cmd->add_option("--data", data_id)->required();
+        auto strategy_opt = run_cmd->add_option("--strategy", strategy_id)->required();
+        auto equity_opt = run_cmd->add_option("--equity", equity)->default_val(DEFAULT_INITIAL_EQUITY);
+        run_cmd->callback([this, data_opt, strategy_opt, equity_opt]()
+                          {
+            std::string data_id_val = data_opt->as<std::string>();
+            std::string strategy_id_val = strategy_opt->as<std::string>();
+            double equity_val = equity_opt->as<double>();
+            handle_backtest_run(data_id_val, strategy_id_val, equity_val); });
 
         backtest->add_subcommand("list", "列出回测结果")
             ->callback([this]()
@@ -152,27 +168,27 @@ namespace stock_backtrack
 
         auto show_backtest_cmd = backtest->add_subcommand("show", "获取回测详情");
         std::string show_backtest_id;
-        show_backtest_cmd->add_option("<id>", show_backtest_id)->required();
-        show_backtest_cmd->callback([this, &show_backtest_id]()
-                                    { handle_backtest_show(show_backtest_id); });
+        auto show_backtest_id_opt = show_backtest_cmd->add_option("<id>", show_backtest_id)->required();
+        show_backtest_cmd->callback([this, show_backtest_id_opt]()
+                                    { handle_backtest_show(show_backtest_id_opt->as<std::string>()); });
 
         auto equity_cmd = backtest->add_subcommand("equity", "获取权益曲线");
         std::string equity_id;
-        equity_cmd->add_option("<id>", equity_id)->required();
-        equity_cmd->callback([this, &equity_id]()
-                             { handle_backtest_equity(equity_id); });
+        auto equity_id_opt = equity_cmd->add_option("<id>", equity_id)->required();
+        equity_cmd->callback([this, equity_id_opt]()
+                             { handle_backtest_equity(equity_id_opt->as<std::string>()); });
 
         auto status_cmd = backtest->add_subcommand("status", "获取回测状态");
         std::string status_id;
-        status_cmd->add_option("<id>", status_id)->required();
-        status_cmd->callback([this, &status_id]()
-                             { handle_backtest_status(status_id); });
+        auto status_id_opt = status_cmd->add_option("<id>", status_id)->required();
+        status_cmd->callback([this, status_id_opt]()
+                             { handle_backtest_status(status_id_opt->as<std::string>()); });
 
         auto batch_cmd = backtest->add_subcommand("batch", "批量执行回测");
         std::string batch_file;
-        batch_cmd->add_option("--file", batch_file)->required();
-        batch_cmd->callback([this, &batch_file]()
-                            { handle_backtest_batch(batch_file); });
+        auto batch_file_opt = batch_cmd->add_option("--file", batch_file)->required();
+        batch_cmd->callback([this, batch_file_opt]()
+                            { handle_backtest_batch(batch_file_opt->as<std::string>()); });
     }
 
     void CLI::setup_system_commands()
@@ -188,7 +204,7 @@ namespace stock_backtrack
                        { handle_system_metrics(); });
     }
 
-    void CLI::handle_data_upload(const std::string &file, const std::string &symbol)
+    void CLI::handle_data_upload(const std::string &file, const std::string &symbol, const std::string &format)
     {
         try
         {
@@ -206,17 +222,26 @@ namespace stock_backtrack
                 return;
             }
 
-            // 读取文件获取数据信息
-            DataHandler handler;
-            handler.load_data(file, symbol);
+            // 根据格式创建不同的DataHandler
+            std::unique_ptr<DataHandler> handler;
+            if (format == "baostock")
+            {
+                handler = std::make_unique<BaoStockDataHandler>();
+            }
+            else
+            {
+                handler = std::make_unique<DataHandler>();
+            }
+
+            handler->load_data(file, symbol);
 
             // 获取数据时间范围
-            auto time_range = handler.get_time_range(symbol);
+            auto time_range = handler->get_time_range(symbol);
             auto start_time = time_range.first;
             auto end_time = time_range.second;
 
             // 获取数据记录
-            auto bars = handler.get_bars(symbol, start_time, end_time);
+            auto bars = handler->get_bars(symbol, start_time, end_time);
             if (bars.empty())
             {
                 print_error("数据文件为空");
@@ -239,7 +264,7 @@ namespace stock_backtrack
             std::string id = generate_id("data");
 
             // 保存到数据库
-            if (db.create_data_file(id, symbol, file, start_date, end_date, record_count))
+            if (db.create_data_file(id, symbol, file, start_date, end_date, record_count, format))
             {
                 json result = {
                     {"id", id},
@@ -363,17 +388,43 @@ namespace stock_backtrack
     {
         try
         {
-            // 验证JSON格式
-            if (!params.empty())
+            // 验证策略是否存在
+            json existing_strategy;
+            if (!db.get_strategy(id, existing_strategy))
             {
-                json temp = json::parse(params);
+                print_error("策略不存在");
+                return;
             }
 
-            if (db.update_strategy(id, name, params))
+            // 验证JSON格式
+            std::string new_params = params;
+            if (!params.empty())
+            {
+                try
+                {
+                    json temp = json::parse(params);
+                    new_params = params;
+                }
+                catch (const json::parse_error &e)
+                {
+                    print_error("JSON格式错误: " + std::string(e.what()));
+                    return;
+                }
+            }
+            else
+            {
+                // 如果没有提供新参数，使用现有参数
+                new_params = existing_strategy["parameters"].get<std::string>();
+            }
+
+            // 如果没有提供新名称，使用现有名称
+            std::string new_name = name.empty() ? existing_strategy["name"].get<std::string>() : name;
+
+            if (db.update_strategy(id, new_name, new_params))
             {
                 json result = {
                     {"id", id},
-                    {"name", name},
+                    {"name", new_name},
                     {"status", "success"}};
                 print_json(result);
             }
@@ -381,10 +432,6 @@ namespace stock_backtrack
             {
                 print_error("策略更新失败");
             }
-        }
-        catch (const json::parse_error &e)
-        {
-            print_error("JSON格式错误: " + std::string(e.what()));
         }
         catch (const std::exception &e)
         {
@@ -437,23 +484,86 @@ namespace stock_backtrack
                 return;
             }
 
-            // 加载数据
-            DataHandler handler;
+            // 根据数据格式创建合适的DataHandler
+            std::unique_ptr<DataHandler> handler;
+            std::string data_format = "default";
+            if (data_file.contains("format") && !data_file["format"].is_null())
+            {
+                data_format = data_file["format"];
+            }
+
+            if (data_format == "baostock")
+            {
+                handler = std::make_unique<BaoStockDataHandler>();
+            }
+            else
+            {
+                handler = std::make_unique<DataHandler>();
+            }
+
             try
             {
-                handler.load_data(data_file["file_path"], data_file["symbol"]);
+                if (!data_file.contains("file_path") || data_file["file_path"].is_null())
+                {
+                    handle_backtest_error(backtest_id, "数据文件路径不存在");
+                    return;
+                }
+
+                if (!data_file.contains("symbol") || data_file["symbol"].is_null())
+                {
+                    handle_backtest_error(backtest_id, "股票代码不存在");
+                    return;
+                }
+
+                handler->load_data(data_file["file_path"], data_file["symbol"]);
             }
             catch (const std::exception &e)
             {
-                db.update_backtest_status(backtest_id, "failed", 0);
-                print_error("数据加载失败: " + std::string(e.what()));
+                handle_backtest_error(backtest_id, "数据加载失败: " + std::string(e.what()));
                 return;
             }
 
             // 创建策略实例
-            json params = strategy["parameters"];
+            if (!strategy.contains("parameters") || strategy["parameters"].is_null())
+            {
+                handle_backtest_error(backtest_id, "策略参数不存在");
+                return;
+            }
+
+            std::string params_str = strategy["parameters"];
+            json params;
+            try
+            {
+                params = json::parse(params_str);
+            }
+            catch (const json::parse_error &e)
+            {
+                handle_backtest_error(backtest_id, "策略参数格式错误: " + std::string(e.what()));
+                return;
+            }
+
+            // 检查必要的参数是否存在
+            if (!params.contains("short_period") || !params["short_period"].is_number())
+            {
+                handle_backtest_error(backtest_id, "策略参数缺少short_period或类型错误");
+                return;
+            }
+
+            if (!params.contains("long_period") || !params["long_period"].is_number())
+            {
+                handle_backtest_error(backtest_id, "策略参数缺少long_period或类型错误");
+                return;
+            }
+
             int short_period = params["short_period"];
             int long_period = params["long_period"];
+
+            // 检查参数值是否有效
+            if (short_period <= 0 || long_period <= 0 || short_period >= long_period)
+            {
+                handle_backtest_error(backtest_id, "策略参数值无效");
+                return;
+            }
 
             MovingAverageCrossStrategy ma_strategy(short_period, long_period);
 
@@ -461,10 +571,10 @@ namespace stock_backtrack
             ExecutionHandler executor(equity);
 
             // 创建回测引擎
-            BacktestEngine backtest_engine(&handler, &ma_strategy, &executor);
+            BacktestEngine backtest_engine(handler.get(), &ma_strategy, &executor);
 
             // 获取数据时间范围
-            auto time_range = handler.get_time_range(data_file["symbol"]);
+            auto time_range = handler->get_time_range(data_file["symbol"]);
 
             // 运行回测
             db.update_backtest_status(backtest_id, "running", BACKTEST_RUNNING_PROGRESS);
@@ -674,6 +784,12 @@ namespace stock_backtrack
         {
             return false;
         }
+    }
+
+    void CLI::handle_backtest_error(const std::string &backtest_id, const std::string &error_message)
+    {
+        db.update_backtest_status(backtest_id, "failed", 0);
+        print_error(error_message);
     }
 
 } // namespace stock_backtrack
