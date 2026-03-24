@@ -3,6 +3,7 @@
 
 #include <drogon/HttpAppFramework.h>
 #include <string>
+#include <nlohmann/json.hpp>
 
 class APIServer {
 public:

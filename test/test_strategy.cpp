@@ -48,7 +48,7 @@ int main() {
     MovingAverageCrossStrategy strategy(5, 10);
     
     // 生成信号
-    auto signals = strategy.generate_signals(bars);
+    auto signals = strategy.generate_signals(bars, "TEST_STOCK");
     
     // 打印结果
     std::cout << "Strategy: " << strategy.get_name() << std::endl;

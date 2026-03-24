@@ -1,33 +1,78 @@
-\# 🚫 后端开发核心铁律 (Backend Coding Iron Rules)&#x20;
+# 🤖 Elite Agentic Development Team Protocol
 
-&#x20;\## 1. 依赖与库使用 (绝对禁止自造轮子) -&#x20;
+## 1. Role Definition
 
-\*\*JSON 处理\*\*: 必须且只能使用 \`nlohmann/json\` 库 (\`#include \<nlohmann/json.hpp>\`)。   - ❌ \*\*严禁\*\* 编写任何自定义 JSON 解析类 (如 \`SimpleJSON\`, \`MyJsonParser\`)。   - ❌ \*\*严禁\*\* 使用字符串分割或正则表达式来解析 JSON。   - ⚠️ \*\*异常处理\*\*: 如果 \`nlohmann/json\` 编译失败或找不到头文件，\*\*立即停止编码\*\*，输出错误日志，并请求用户检查 \`CMakeLists.txt\` 或依赖安装脚本。\*\*不要尝试绕过此错误。\*\*  ## 2. 内存管理 (零容忍裸指针) - \*\*智能指针优先\*\*: 所有动态内存分配必须使用 \`std::unique\_ptr\` 或 \`std::shared\_ptr\`。 - \*\*禁止裸 new/delete\*\*: 除非有极特殊的性能理由（需在代码注释中详细说明并经架构师批准），否则严禁出现 \`new\` 或 \`delete\` 关键字。 - \*\*资源获取即初始化 (RAII)\*\*: 确保所有资源在构造函数中获取，在析构函数中释放。  ## 3. 架构一致性 - \*\*设计文档优先\*\*: 在编写任何代码前，必须先读取并理解 \`backend\_architecture.md\`。 - \*\*文件完整性\*\*: 实现新功能时，必须检查是否遗漏了设计文档中规定的头文件、源文件或配置文件。 - \*\*依赖声明\*\*: 任何新增的第三方依赖必须在 \`CMakeLists.txt\` (或对应构建文件) 中显式声明，不得隐式依赖。  ## 4. 错误处理协议 - 遇到编译错误或链接错误时：   1. 首先检查构建配置 (\`CMakeLists.txt\`, \`vcpkg.json\` 等)。   2. 其次检查环境变量。   3. \*\*最后手段\*\*: 报告错误，等待指令。   4. ❌ \*\*禁止\*\* 修改业务逻辑以适配错误的编译环境（例如：为了消除报错而删除功能或替换库）。
+You are working in a team You have the following team members:
 
-<br />
+- **Architect Agent**: @Backend Architect
+- **Coder Agent**: @SOLOCODER.
+- **Reviewer Agent**: @Backend Architect.
+- **QA Agent**: Debug Bot.
+- **DevOps Agent**: @Git 仓库专家
 
-**原子化拆解（Atomic Decomposition）：** 严禁一次性生成完整系统。必须将项目拆解为极小的、可独立验证的步骤。例如：
+## 2. Core Memory Principle
 
-*Step 1:* 仅定义核心数据结构（Data Structures）。
+> **CRITICAL**: The file system is the ONLY memory.
 
-*Step 2:* 仅实现 CSV 数据加载与解析（I/O Layer）。
+- **Single Source of Truth**: Rely on `PROGRESS.md` and `backend_architecture.md`, NOT chat history.
+- **State Persistence**: Every action must update `PROGRESS.md`.
+- **Context Reset**: Assume every new task starts in a FRESH window.
 
-*Step 3:* 仅编写均线（MA）计算逻辑。
+---
 
-...以此类推，直到模拟撮合与绩效统计。
+## 3. Global Workflow Rules
 
-**同步确认机制（Synchronization Gate）：** 实行‘一步一确认’。只有在我明确回复‘当前步骤完成并验证通过’后，AI 才被允许进入下一个任务。
+### Phase 1: Pre-Run (Planning)
 
-<br />
+1. **Load State**: Read `backend_architecture.md` AND `PROGRESS.md`.
+2. **Architecture Check**: Stop if request deviates from architecture.
+3. **Decomposition**: Break request into atomic sub-tasks.
+4. **Wait**: Present list and WAIT for user selection.
 
-### 新增规则
+### Phase 2: Execution (Quality Loop)
 
-后端代码开发流程 ：
+For each selected task:
 
-- ✅ 实现代码前阅读 backend\_architecture.md
-- ✅ 实现后调用后端架构师Agent进行代码审查
-  CLI接口要求 
-- ✅ 代码审查通过后更新backend\_architecture.md
-- CLI接口要求 ：
-  - ✅ 每个文件实现完成后暂停等待确认
+1. **Implement**: Write code (Strict Typing, Modular).
+2. **Peer-Review**: Let backend architect check for leaks, security, and edge cases. Let debug Bot check for errors and runtime bugs. **Fix immediately**.
+3. **Test**: Generate & Run tests. **Self-heal** until GREEN.
+4. **Document**: Update `PROGRESS.md` (See Format Below).
 
+### Phase 3: Post-Run (Handover)
+
+1. **Git**: Stage changes & Commit (Semantic Message).
+2. **Stop**: Output "🛑 CODING PAUSED. Waiting for Human Review."
+3. Let "git仓库专家" check the commit message and push to remote repository.
+4. **Reset Instruction**: Tell user to **CLOSE this window** and open a NEW one.
+
+---
+
+## 4. PROGRESS.md Update Format
+
+When updating `PROGRESS.md`, strictly follow this structure:
+
+```markdown
+## Current Status: [WAITING_REVIEW]
+
+## Last Completed Task: [Task ID]
+
+## Next Immediate Action: [Next Task Description]
+
+### Task Log
+
+- [x] [Task ID]: [Name]
+  - Files: [List files]
+  - Notes: [Key decisions]
+- [ ] [Next Task ID]: [Name]
+```
+
+## 🛡️ C++ Specific Protocol (CRITICAL)
+
+- **Trigger**: Whenever the task involves C++ files (`.cpp`, `.h`, `.hpp`, `.cc`).
+- **Mandatory Pre-Run**: You MUST read `@cpp_rule.md` BEFORE writing any C++ code.
+- **Compliance Check**:
+  - Verify that memory management follows the rules in `cpp_rule.md` (e.g., Smart Pointers vs. Raw Pointers).
+  - Ensure modern C++ standards (C++17/20) are used as defined.
+  - Check naming conventions and error handling strategies against `cpp_rule.md`.
+- **Violation Action**: If your planned implementation conflicts with `cpp_rule.md`, STOP and propose a compliant alternative.
+- **Self-Review Update**: In the Reviewer Agent phase, add a specific check: "Does this code strictly adhere to `cpp_rule.md`?"

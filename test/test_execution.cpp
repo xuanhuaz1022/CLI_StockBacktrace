@@ -28,7 +28,7 @@ int main()
     MovingAverageCrossStrategy strategy(3, 5);
 
     // 生成信号
-    auto signals = strategy.generate_signals(bars);
+    auto signals = strategy.generate_signals(bars, "TEST_STOCK");
 
     // 执行信号前的投资组合状态
     std::cout << "执行前:" << std::endl;

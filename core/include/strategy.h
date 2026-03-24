@@ -30,7 +30,7 @@ public:
     virtual void initialize() = 0;
     
     // 处理数据并生成信号
-    virtual std::vector<Signal> generate_signals(const std::vector<Bar>& bars) = 0;
+    virtual std::vector<Signal> generate_signals(const std::vector<Bar>& bars, const std::string& symbol) = 0;
     
     // 获取策略名称
     virtual std::string get_name() const = 0;
@@ -47,7 +47,7 @@ public:
     MovingAverageCrossStrategy(size_t short_period, size_t long_period);
     
     void initialize() override;
-    std::vector<Signal> generate_signals(const std::vector<Bar>& bars) override;
+    std::vector<Signal> generate_signals(const std::vector<Bar>& bars, const std::string& symbol) override;
     std::string get_name() const override;
 };
 

@@ -32,7 +32,7 @@ void BacktestEngine::run(const std::string& symbol,
         std::vector<Bar> historical_data(bars.begin(), bars.begin() + i + 1);
         
         // 生成交易信号
-        std::vector<Signal> signals = strategy_->generate_signals(historical_data);
+        std::vector<Signal> signals = strategy_->generate_signals(historical_data, symbol);
         
         // 执行交易信号
         executor_->execute_signals(signals, historical_data);
