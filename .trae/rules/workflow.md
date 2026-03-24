@@ -41,7 +41,7 @@ For each selected task:
 ### Phase 3: Post-Run (Handover)
 
 1. **Git**: Stage changes & Commit (Semantic Message).
-2. **Stop**: Output "🛑 CODING PAUSED. Waiting for Human Review."
+2. **PAUSE**: Output "🛑 CODING PAUSED. Waiting for Human Review."
 3. Let "git仓库专家" check the commit message and push to remote repository.
 4. **Reset Instruction**: Tell user to **CLOSE this window** and open a NEW one.
 
