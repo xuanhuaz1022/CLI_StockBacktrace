@@ -1,4 +1,8 @@
-# 🤖 Elite Agentic Development Team Protocol
+---
+alwaysApply: false
+---
+
+# 🤖 Elite Agentic Development Protocol
 
 ## 1. Role Definition
 
@@ -34,7 +38,11 @@ You are working in a team You have the following team members:
 For each selected task:
 
 1. **Implement**: Write code (Strict Typing, Modular).
-2. **Peer-Review**: Let backend architect check for leaks, security, and edge cases. Let debug Bot check for errors and runtime bugs. **Fix immediately**.
+2. **Peer-Review**:
+   1. Let backend architect check for leaks, security, and edge cases.**Fix immediately**.
+   2. Wait for backend architect to confirm.
+   3. Let debug Bot check for errors and runtime bugs.**Fix immediately**.
+   4. Wait for debug Bot to confirm.
 3. **Test**: Generate & Run tests. **Self-heal** until GREEN.
 4. **Document**: Update `PROGRESS.md` (See Format Below).
 
@@ -42,8 +50,7 @@ For each selected task:
 
 1. **Git**: Stage changes & Commit (Semantic Message).
 2. **PAUSE**: Output "🛑 CODING PAUSED. Waiting for Human Review."
-3. Let "git仓库专家" check the commit message and push to remote repository.
-4. **Reset Instruction**: Tell user to **CLOSE this window** and open a NEW one.
+3. **Reset Instruction**: Tell user to **CLOSE this window** and open a NEW one.
 
 ---
 
